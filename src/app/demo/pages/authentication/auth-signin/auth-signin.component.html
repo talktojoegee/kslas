@@ -1,0 +1,63 @@
+<div class="auth-wrapper align-content-center" style="width:400px !important;">
+  <div class="auth-content">
+
+    <div class="card">
+      <div class="card-body ">
+        <div class="mb-4 text-center">
+          <img src="assets/images/log.png" height="98" width="300" alt="KSLAS">
+        </div>
+
+
+
+        <h3 class="mb-4">Login</h3>
+
+        <div *ngIf="errorMessage" class="alert alert-warning" role="alert">
+          {{errorMessage}}
+        </div>
+
+        <form class="forms-sample" [formGroup]="loginForm">
+          <div class="mb-3">
+            <p class="mb-3">Enter your username & password to login</p>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Username</label>
+              <input type="email" formControlName="username" class="form-control shadow-none mb-0" id="exampleInputEmail1" placeholder="Enter username">
+              @if(loginForm.controls['username'].touched && loginForm.controls['username'].errors?.['required']){
+              <div  class=" text-danger">
+                Enter your username
+              </div>
+              }
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-group">
+              <label for="password">Password</label>
+
+              <input type="password" formControlName="password" class="form-control shadow-none mb-0" id="password" placeholder="Enter password">
+              @if(loginForm.controls['password'].touched && loginForm.controls['password'].errors?.['required']){
+              <div  class=" text-danger">
+                Enter your password
+              </div>
+              }
+            </div>
+          </div>
+          <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="authCheck">
+            <label class="form-check-label" for="authCheck">
+              Remember me
+            </label>
+          </div>
+          <div>
+            <div class="sign-info text-center">
+              <p-toast></p-toast>
+              <button type="button" (click)="handleLogin()" [disabled]="loginForm.invalid "  *ngIf="!isFormSubmitted"   class="btn btn-primary btn-block w-100"> Login</button>
+              <button type="button" disabled  class="btn btn-secondary d-block w-100 mb-4" *ngIf="isFormSubmitted"><i  class="fa fa-spinner fa-spin"></i> Please wait...</button>
+              <span class="d-flex mt-3 text-dark dark-color d-inline-block line-height-2">Forgot password? <a href="#" class="float-right"> &nbsp; Reset your password here</a></span>
+            </div>
+          </div>
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+</div>

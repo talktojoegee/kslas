@@ -1,0 +1,233 @@
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-body">
+      <form id="filterForm" class="row g-3">
+        <div class="col-md-6">
+          <label for="year" class="form-label">Select Year</label>
+          <select [(ngModel)]="selectedYear" class="form-select shadow-none" id="year" name="year">
+            <option value="" selected disabled>Select Year</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+          </select>
+        </div>
+        <div class="col-md-6 d-flex  align-items-end">
+          <button type="button" (click)="filterDashboardRecord();" class="btn mt-4 btn-success w-100"> <i class="feather icon-filter"></i> Filter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<p>Showing record for year: <code>{{ currentYear }}</code></p>
+
+<div class="row">
+    <div class="{{ sales[0].design }} col-xl-3 ">
+      <div class="card">
+        <div class="card-body theme-bg">
+          <h6 class="mb-4 text-white">{{ sales[0].title }}</h6>
+          <div class="row d-flex align-items-center">
+            <div class="col-9">
+              <h3 class="f-w-300 text-white d-flex align-items-center m-b-0">
+                <i class="feather icon-bar-chart f-30 m-r-10"></i>
+                {{ sales[0].amount }}
+              </h3>
+            </div>
+            <div class="col-3 text-end">
+              <p class="m-b-0 text-white">{{ sales[0].percentage }}</p>
+            </div>
+          </div>
+          <div class="m-t-30">
+            <ngb-progressbar type="text-primary" height="7px" [value]="sales[0].progress"></ngb-progressbar>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="{{ sales[1].design }} col-xl-3 ">
+      <div class="card">
+        <div class="card-body theme-bg2">
+          <h6 class="mb-4 text-white">{{ sales[1].title }}</h6>
+          <div class="row d-flex align-items-center">
+            <div class="col-9">
+              <h3 class="f-w-300 text-white d-flex align-items-center m-b-0">
+                <i class="feather icon-pie-chart f-30 m-r-10"></i>
+                {{ sales[1].amount }}
+              </h3>
+            </div>
+            <div class="col-3 text-end">
+              <p class="m-b-0">{{ sales[1].percentage }}</p>
+            </div>
+          </div>
+          <div class="m-t-30">
+            <ngb-progressbar type="text-primary" height="7px" [value]="sales[1].progress"></ngb-progressbar>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="{{ sales[2].design }} col-xl-3  col-md-3">
+      <div class="card" >
+        <div class="card-body bg-c-blue">
+          <h6 class="mb-4 text-white">{{ sales[2].title }}</h6>
+          <div class="row d-flex align-items-center">
+            <div class="col-9 ">
+              <h3 class="f-w-300 text-white d-flex align-items-center m-b-0">
+                <i class="feather icon-disc text-white f-30 m-r-10"></i>
+                {{ sales[2].amount }}
+              </h3>
+            </div>
+            <div class="col-3 text-end">
+              <p class="m-b-0 text-white">{{ sales[2].percentage }}</p>
+            </div>
+          </div>
+          <div class="m-t-30">
+            <ngb-progressbar type="text-primary" height="7px" [value]="sales[2].progress"></ngb-progressbar>
+          </div>
+        </div>
+      </div>
+    </div>
+  <div class=" col-xl-3  col-md-3">
+    <div class="card" >
+      <div class="card-body bg-c-red">
+        <h6 class="mb-4 text-white">No. of Bills</h6>
+        <div class="row d-flex align-items-center">
+          <div class="col-9 ">
+            <h3 class="f-w-300 text-white d-flex align-items-center m-b-0">
+              <i class="feather icon-zap text-white f-30 m-r-10"></i>
+              {{ noOfBills }}
+            </h3>
+          </div>
+          <div class="col-3 text-end">
+            <p class="m-b-0 text-white"></p>
+          </div>
+        </div>
+        <div class="m-t-30">
+          <ngb-progressbar type="text-primary" height="7px" [value]="0"></ngb-progressbar>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <app-card cardTitle="Bill Amount vs Amount Paid" [options]="false">
+      <apx-chart
+        [series]="barSimpleChart.series"
+        [chart]="barSimpleChart.chart"
+        [dataLabels]="barSimpleChart.dataLabels"
+        [plotOptions]="barSimpleChart.plotOptions"
+        [yaxis]="barSimpleChart.yaxis"
+        [legend]="barSimpleChart.legend"
+        [fill]="barSimpleChart.fill"
+        [stroke]="barSimpleChart.stroke"
+        [tooltip]="barSimpleChart.tooltip"
+        [xaxis]="barSimpleChart.xaxis"
+      ></apx-chart>
+    </app-card>
+  </div>
+
+  <div class="col-md-6">
+    <app-card cardTitle="Bills By Zones" [options]="false">
+      <apx-chart
+        [series]="donutChart.series"
+        [chart]="donutChart.chart"
+        [labels]="donutChart.labels"
+        [colors]="donutChart.colors"
+        [legend]="donutChart.legend"
+        [dataLabels]="donutChart.dataLabels"
+        [plotOptions]="donutChart.plotOptions"
+      ></apx-chart>
+    </app-card>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <app-card cardTitle="Monthly Bill Payment" [options]="false">
+      <apx-chart
+        [series]="monthlyBillPaymentChart.series"
+        [chart]="monthlyBillPaymentChart.chart"
+        [labels]="monthlyBillPaymentChart.labels"
+        [colors]="monthlyBillPaymentChart.colors"
+        [legend]="monthlyBillPaymentChart.legend"
+        [dataLabels]="monthlyBillPaymentChart.dataLabels"
+        [plotOptions]="monthlyBillPaymentChart.plotOptions"
+      ></apx-chart>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <tr class="bg-primary text-white">
+            @for(label of labels; track $index){
+
+            <td>{{ label }}</td>
+            }
+          </tr>
+          <tr>
+            @for(data of labelData; track $index){
+
+            <td>{{ (data).toLocaleString() }}</td>
+            }
+          </tr>
+        </table>
+      </div>
+    </app-card>
+  </div>
+  <div class="col-md-6">
+    <app-card cardTitle="Property Distribution by Zones" [options]="false">
+      <apx-chart
+        [series]="zoneSimpleChart.series"
+        [chart]="zoneSimpleChart.chart"
+        [dataLabels]="zoneSimpleChart.dataLabels"
+        [plotOptions]="zoneSimpleChart.plotOptions"
+        [yaxis]="zoneSimpleChart.yaxis"
+        [legend]="zoneSimpleChart.legend"
+        [fill]="zoneSimpleChart.fill"
+        [stroke]="zoneSimpleChart.stroke"
+        [tooltip]="zoneSimpleChart.tooltip"
+        [xaxis]="zoneSimpleChart.xaxis"
+      ></apx-chart>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <tr class="bg-danger text-white">
+            @for(label of subZoneLabels; track $index){
+
+            <td>{{ label }}</td>
+            }
+          </tr>
+          <tr>
+            @for(data of subZoneData; track $index){
+
+            <td>{{ (data).toLocaleString() }}</td>
+            }
+          </tr>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <app-card cardTitle="Most Recent Transactions" [options]="false">
+      <p class="text-center">No record found</p>
+    </app-card>
+  </div>
+  <div class="col-xl-4 col-md-6">
+    <div class="card">
+      @for (list of card; track list) {
+      <div class="card-block {{ list.design }}">
+          <div class="row d-flex align-items-center">
+            <div class="col-auto">
+              <i class="feather {{ list.icon }} f-30"></i>
+            </div>
+            <div class="col">
+              <h3 class="f-w-300">{{ list.number }}</h3>
+              <span class="d-block text-uppercase">{{ list.text }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

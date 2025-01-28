@@ -1,0 +1,68 @@
+<div class="row">
+  <div class="col-md-4 col-lg-4 col-sm-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+        <div class="header-title">
+          <h6 class="card-title text-uppercase">Add New Property Classification </h6>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="mb-3">Enter Property Classification Details below</p>
+        <form [formGroup]="classForm" >
+          <div class="form-group mb-3">
+            <label for="className"> Name<sup class="text-danger">*</sup>:</label>
+            <input name="className" id="className"  formControlName="className" type="text" class="form-control" placeholder="  Name">
+            <div *ngIf="classForm.controls['className'].touched && classForm.controls['className'].errors?.['required']" class="text-danger">
+              Class name is required
+            </div>
+            <!-- Server-side error -->
+
+          </div>
+
+
+          <div class="d-flex justify-content-center">
+            <button type="button" (click)="onSaveClass()" [disabled]="classForm.invalid " *ngIf="!isFormSubmitted" class="btn btn-primary">Submit </button>
+            <button type="button" disabled style="cursor: not-allowed" *ngIf="isFormSubmitted" class="btn btn-primary"><i class="fa fa-spinner fa-spin"></i> Processing  </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8 col-lg-8 col-sm-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+        <div class="header-title">
+          <h6 class="card-title text-uppercase">Manage Property Classification</h6>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            @for(item of classList; track $index){
+            <tr>
+              <th>{{$index + 1}}</th>
+              <td>{{ item.className }}</td>
+              <td>
+                <a href=""><i class="ri-edit-line text-warning"></i></a>
+              </td>
+            </tr>
+            }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p-toast></p-toast>
+</div>

@@ -1,0 +1,219 @@
+<div class="row mb-3 ">
+  <div class="col-md-12 d-flex justify-content-end">
+    <div class="btn-group">
+      <button (click)="goBack()" class="btn btn-sm btn-secondary"> <i class="feather icon-skip-back"></i>  Go Back </button>
+      <button data-toggle="modal" [routerLink]="'/billings/synchronization'" data-target="#pListModal" class="btn btn-sm btn-primary "> <i class="feather icon-refresh-ccw"></i>  Sync Data </button>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 col-lg-12 col-sm-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+        <div class="header-title">
+          <h5 class="card-title text-uppercase">Manage Properties</h5>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>Total: <code>{{total.toLocaleString()}}</code> properties</p>
+        <div class="table-responsive">
+          <p-table
+            #propertyTable
+            [value]="propertyList"
+            [loading]="isLoading"
+            [rows]="limit"
+            [globalFilterFields]="['building_code', 'pav_code', 'owner_name', 'lga_name', 'title']"
+          >
+            <ng-template pTemplate="caption">
+              <div class="flex">
+             <span class="p-input-icon-left ml-auto">
+                <input
+                  style="padding:5px;"
+                  pInputText
+                  type="text"
+                  (input)="propertyTable.filterGlobal($any($event.target).value, 'contains')"
+                  placeholder="Search keyword" />
+            </span>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr class="text-uppercase">
+                <th scope="col" >#</th>
+                <th pSortableColumn="buildingCode" scope="col" >Building Code <p-sortIcon field="buildingCode" /></th>
+                <th pSortableColumn="owner" scope="col">Owner <p-sortIcon field="owner" /></th>
+                <th pSortableColumn="pavCode" scope="col">PAV Code <p-sortIcon field="pavCode" /></th>
+                <th scope="col">Zone</th>
+                <th pSortableColumn="lgaName" scope="col">LGA <p-sortIcon field="lgaName" /></th>
+                <th pSortableColumn="class" scope="col">Class <p-sortIcon field="class" /></th>
+                <th scope="col">Occupancy</th>
+                <th scope="col">Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowIndex="rowIndex" let-item>
+              <tr style="font-size:14px;">
+                <th>{{ skip+rowIndex+1 }}</th>
+                <td>{{ item?.buildingCode }}</td>
+                <td>{{ item?.owner }}</td>
+                <td>{{ item?.pavCode }}</td>
+                <td>{{ item?.zoneName || '-' }}</td>
+                <td>{{ item?.lgaName || '-' }}</td>
+                <td>{{ item?.class || '-' }}</td>
+                <td>{{ item?.occupancy || '-' }}</td>
+                <td>
+                  <a [routerLink]="['/owner-management/property-details/', item.id]"><i class="feather icon-settings text-muted"></i></a>
+                </td>
+              </tr>
+            </ng-template>
+
+          </p-table>
+          <p-paginator
+            [first]="skip"
+            [rows]="limit"
+            [totalRecords]="total"
+            (onPageChange)="fetchData($event)"
+          />
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <p-toast></p-toast>
+
+  <div class="modal fade" id="pListModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalScrollableTitle">Add New Property List</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="listForm" >
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="buildingCode"> Building Code<sup class="text-danger">*</sup>:</label>
+                  <input name="buildingCode" id="buildingCode"  formControlName="buildingCode" type="text" class="form-control" placeholder=" Building Code">
+                  <div *ngIf="listForm.controls['buildingCode'].touched && listForm.controls['buildingCode'].errors?.['required']" class="text-danger">
+                    Building Code is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="title"> Title<sup class="text-danger">*</sup>:</label>
+                  <select name="title" formControlName="title" id="title" class="form-control">
+                    <option disabled selected>--Select Title--</option>
+                    <option *ngFor="let tl of titleList" [value]="tl.id">{{tl.title}}</option>
+                  </select>
+                  <div *ngIf="listForm.controls['title'].touched && listForm.controls['title'].errors?.['required']" class="text-danger">
+                    Title is required
+                  </div>
+                  <!-- Server-side error -->
+
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="pavCode">PAV <sup class="text-danger">*</sup></label>
+                  <select name="pavCode" formControlName="pavCode" id="pavCode" class="form-control">
+                    <option disabled selected>--Select PAV Code --</option>
+                    <option *ngFor="let pav of pavList" [value]="pav.id">{{pav.pavCode}}</option>
+                  </select>
+                  <div *ngIf="listForm.controls['pavCode'].touched && listForm.controls['pavCode'].errors?.['required']" class="text-danger">
+                    PAV Code is required
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="owner"> Owner<sup class="text-danger">*</sup>:</label>
+                  <select name="owner" formControlName="owner" id="owner" class="form-control">
+                    <option disabled selected>--Select Owner--</option>
+                    <option *ngFor="let owner of ownerList" [value]="owner.id">{{owner.name}}</option>
+                  </select>
+                  <div *ngIf="listForm.controls['owner'].touched && listForm.controls['owner'].errors?.['required']" class="text-danger">
+                    Owner is required
+                  </div>
+                  <!-- Server-side error -->
+
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="lga">LGA <sup class="text-danger">*</sup></label>
+                  <select name="lga" formControlName="lga" id="lga" class="form-control">
+                    <option disabled selected>--Select LGA--</option>
+                    <option *ngFor="let option of lgaList" [value]="option.id">{{option.lgaName}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="area"> Area<sup class="text-danger">*</sup>:</label>
+                  <input name="area" id="area"  formControlName="area" type="text" class="form-control" placeholder=" Area">
+                  <div *ngIf="listForm.controls['area'].touched && listForm.controls['area'].errors?.['required']" class="text-danger">
+                    Area is required
+                  </div>
+                  <!-- Server-side error -->
+
+                </div>
+              </div>
+              <div class="col-md-6">
+
+                <div class="form-group">
+                  <label for="size"> Size<sup class="text-danger">*</sup>:</label>
+                  <input name="size" id="size"  formControlName="size" type="text" class="form-control" placeholder=" Size">
+                  <div *ngIf="listForm.controls['size'].touched && listForm.controls['size'].errors?.['required']" class="text-danger">
+                    Size is required
+                  </div>
+                  <!-- Server-side error -->
+
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="image"> Image<small class="text-muted">(Optional)</small>:</label>
+                  <input name="image" id="image"  formControlName="image" type="file" class="form-control-file" placeholder=" Image">
+
+                  <!-- Server-side error -->
+
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="address"> Address<sup class="text-danger">*</sup>:</label>
+                <textarea name="address" id="address"  formControlName="address"  class="form-control" placeholder=" Enter Address..."></textarea>
+                <div *ngIf="listForm.controls['address'].touched && listForm.controls['address'].errors?.['required']" class="text-danger">
+                  Address is required
+                </div>
+                <!-- Server-side error -->
+
+              </div>
+            </div>
+
+
+
+            <div class="d-flex justify-content-center">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" (click)="onSavePropertyList()" [disabled]="listForm.invalid " *ngIf="!isFormSubmitted" class="btn btn-primary">Submit </button>
+              <button type="button" disabled style="cursor: not-allowed" *ngIf="isFormSubmitted" class="btn btn-primary"><i class="fa fa-spinner fa-spin"></i> Processing  </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

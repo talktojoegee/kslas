@@ -1,0 +1,208 @@
+<div class="row">
+  <div class="col-sm-12 col-lg-12 d-flex justify-content-end">
+    <div class="btn-group">
+      <button (click)="goBack()" type="button" class="btn btn-secondary">Go Back</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="row mt-4">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="mb-3">Retrieve or Process Bill</h5>
+
+        <ul class="nav nav-pills mb-3" ngbNav #nav1="ngbNav">
+          <li class="nav-item" [ngbNavItem]="1">
+            <a class="nav-link" ngbNavLink aria-controls="pills-home" aria-selected="true">Retrieve Bill</a>
+            <ng-template ngbNavContent>
+              <div class="row p-4">
+                <div class="col-md-4 p-3">
+                  <form [formGroup]="billingForm">
+                    <div class="row">
+                      <div class="col col-md-4">
+                        <div class="form-group mb-3">
+                          <label for="">Year: <sup class="text-danger">*</sup></label>
+                          <input formControlName="year" type="number" class="form-control shadow-none" placeholder="Year">
+                          <div *ngIf="billingForm.controls['year'].touched && billingForm.controls['year'].errors?.['required']" class="text-danger">
+                            Year is required
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12 d-flex justify-content-center">
+                        <button (click)="retrieveBills();" [disabled]="billingForm.invalid " *ngIf="!isFormSubmitted" class="btn btn-primary btn-lg ml-3">Retrieve Bill</button>
+                      </div>
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+
+              <div class="row mt-5">
+                <div class="col-sm-12 col-lg-12">
+                  <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                      <div class="header-title">
+                        <h6 class="card-title">Billing Year: <strong>{{billingYear}}</strong></h6>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="table-responsive" *ngIf="isRetrieved">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">LGA</th>
+                        <th style="text-align: right;" scope="col"># of Buildings</th>
+                        <th style="text-align: right;" scope="col"># of Bills</th>
+                        <th style="text-align:right;" scope="col">Billing Amount({{ APP_CURRENCY }})</th>
+                        <th style="text-align:center;" scope="col">Action</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let bill of billList;  index as i">
+                        <td>{{i + 1}}</td>
+                        <td>{{ bill.lgaName }}</td>
+                        <td style="text-align: right;">{{ bill.noOfBuildings.toLocaleString() }}</td>
+                        <td style="text-align: right;">{{ bill.noOfBills.toLocaleString() }}</td>
+                        <td style="text-align: right;">{{ bill.billAmount.toLocaleString() }}</td>
+                        <td style="text-align:center;">
+                          <button class="btn btn-sm btn-danger btn-glow" data-bs-toggle="modal" [attr.data-bs-target]="'#rollback_' + i" > <i class="feather icon-rotate-ccw"></i> Rollback</button>
+                          <div class="modal fade" [id]="'rollback_' + i" tabindex="-1"  aria-labelledby="'rollback_' + i" aria-hidden="true">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title text-uppercase" id="exampleModalLabel">Rollback {{ bill.lgaName }} bill?</h5>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  <p class="text-wrap text-left">Are you sure you want to rollback {{ bill.lgaName }} bill? <strong class="text-danger">Note:</strong>This action cannot be undone.</p>
+                                  <div class="table-responsive">
+                                    <table class="table table-bordered text-left">
+                                      <tr>
+                                        <td><strong>LGA:</strong> {{ bill.lgaName }}</td>
+                                      </tr>
+                                      <tr>
+                                        <td><strong>Number of Buildings:</strong> {{ bill.noOfBuildings.toLocaleString() }}</td>
+                                      </tr>
+                                      <tr>
+                                        <td><strong>Number of Bills:</strong> {{ bill.noOfBills.toLocaleString() }}</td>
+                                      </tr>
+                                      <tr>
+                                        <td><strong>Billing Amount:</strong> {{ APP_CURRENCY }}{{ bill.billAmount.toLocaleString() }}</td>
+                                      </tr>
+                                      <tr>
+                                        <td><strong>Date:</strong> {{ bill.entryDate }}</td>
+                                      </tr>
+                                      <tr>
+                                        <td><strong>Billed By:</strong> {{ bill.billedBy }}</td>
+                                      </tr>
+                                    </table>
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                  <button type="button" class="btn btn-danger"> <i class="feather icon-check"></i> Rollback</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+
+
+
+
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="table-responsive" *ngIf="isProcessed">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Assessment No.</th>
+                        <th scope="col">Building Code</th>
+                        <th scope="col">Year</th>
+                        <th scope="col">Zone</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Owner</th>
+                        <th style="text-align:right;" scope="col">Billing Amount({{ APP_CURRENCY }})</th>
+                        <th scope="col">Payment</th>
+                        <th style="text-align:right;" scope="col">Balance({{ APP_CURRENCY }})</th>
+                        <th  scope="col">Action</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+
+
+
+
+                      </tbody>
+                    </table>
+                  </div>
+
+                </div>
+                <p-toast></p-toast>
+              </div>
+
+            </ng-template>
+          </li>
+          <li class="nav-item" [ngbNavItem]="2">
+            <a class="nav-link" ngbNavLink aria-controls="pills-home" aria-selected="true">Process Bill</a>
+            <ng-template ngbNavContent>
+              <div class="row p-4">
+                <div class="col-md-6 ">
+                  <h5 class="text-info text-uppercase">Process Bill</h5>
+
+                  <form [formGroup]="processBillForm">
+                    <div class="row">
+                      <div class="col col-md-8">
+                        <div class="form-group mb-3">
+                          <label for="">LGA: <sup class="text-danger">*</sup> </label>
+                          <select name="lgaId" formControlName="lgaId" id="lgaId" class="form-control shadow-none">
+                            <option selected disabled>--Select LGA--</option>
+                            @for(item of lgaList; track $index){
+                            <option value="{{ item?.id }}">{{ item?.lgaName }}</option>
+                            }
+                          </select>
+                          <div *ngIf="processBillForm.controls['lgaId'].touched && processBillForm.controls['lgaId'].errors?.['required']" class="text-danger">
+                            LGA is required
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col col-md-8">
+                        <div class="form-group mb-3">
+                          <label for="">Year: <sup class="text-danger">*</sup></label>
+                          <input formControlName="year" type="number" class="form-control shadow-none" placeholder="Year">
+                          <div *ngIf="processBillForm.controls['year'].touched && processBillForm.controls['year'].errors?.['required']" class="text-danger">
+                            Year is required
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12 d-flex justify-content-center">
+                        <div class="btn-group">
+                          <button (click)="processBilling();" [disabled]="processBillForm.invalid " *ngIf="!isFormSubmitted" class="btn btn-primary btn-lg ml-3">Process Bill</button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+            </ng-template>
+          </li>
+        </ul>
+        <div [ngbNavOutlet]="nav1" class="mt-2"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

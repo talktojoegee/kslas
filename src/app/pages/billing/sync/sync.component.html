@@ -1,0 +1,74 @@
+<div class="row">
+  <div class="col-sm-12 col-lg-12 d-flex justify-content-end">
+    <div class="btn-group">
+      <button (click)="goBack()" type="button" class="btn btn-secondary"> <i class="feather icon-skip-back"></i> Go Back</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <app-card  cardTitle="Synchronize Data" [options]="false">
+      <form action="" [formGroup]="syncForm">
+        <div class="form-group mb-3">
+          <label for="">Choose LGA <sup class="text-danger">*</sup></label>
+          <select name="lgaId" formControlName="lgaId" id="lgaId" class="form-control shadow-none mt-3">
+            <option disabled selected>--Select LGA--</option>
+            <option *ngFor="let option of lgaList" [value]="option.id">{{option.lgaName}}</option>
+          </select>
+          <div *ngIf="syncForm.controls['lgaId'].touched && syncForm.controls['lgaId'].errors?.['required']" class="text-danger">
+            LGA  is required
+          </div>
+        </div>
+        <div class="form-group d-grid">
+          <button class="btn btn-primary btn-lg btn-block " (click)="syncData()" [disabled]="syncForm.invalid " *ngIf="!isFormSubmitted">Sync Data</button>
+          <button class="btn btn-secondary btn-lg btn-block " disabled *ngIf="isFormSubmitted">Synchronizing Data...</button>
+        </div>
+
+      </form>
+    </app-card>
+  </div>
+  <p-toast></p-toast>
+</div>
+
+
+<app-card class=" mt-4 " cardTitle="Data Synchronization Log" [options]="false">
+  <div class="table-responsive">
+    <p-table
+      [value]="logList"
+      [loading]="isLoading"
+      [rows]="limit"
+      [globalFilterFields]="['buildingCode', 'categoryName', 'owner', 'assessmentNo']"
+    >
+
+      <ng-template pTemplate="header">
+        <tr class="text-uppercase">
+          <th scope="col">#</th>
+          <th scope="col">LGA</th>
+          <th class="text-center" scope="col"># of GIS Records</th>
+          <th class="text-center" scope="col"># of Records Sync.</th>
+          <th scope="col">Date Last Sync</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowIndex="rowIndex" let-item>
+        <tr style="font-size:14px;">
+          <td>{{ skip+rowIndex+1 }}</td>
+          <td>{{ item.lgaName  }}</td>
+          <td class="text-center">{{ item.gis.toLocaleString() }}</td>
+          <td class="text-center">{{ item.labs.toLocaleString() }}</td>
+          <td>{{ item.lastSync }}</td>
+        </tr>
+      </ng-template>
+
+    </p-table>
+    <p-paginator
+      [first]="skip"
+      [rows]="limit"
+      [totalRecords]="total"
+      (onPageChange)="loadSyncLog($event)"
+    />
+
+  </div>
+</app-card>
+
