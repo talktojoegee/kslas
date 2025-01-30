@@ -63,10 +63,15 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": {
+                "fonts": false
+              }
             },
             "development": {
-              "optimization": false,
+              "optimization": {
+                "fonts": false
+              },
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true,

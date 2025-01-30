@@ -127,23 +127,6 @@
       ></apx-chart>
     </app-card>
   </div>
-
-  <div class="col-md-6">
-    <app-card cardTitle="Bills By Zones" [options]="false">
-      <apx-chart
-        [series]="donutChart.series"
-        [chart]="donutChart.chart"
-        [labels]="donutChart.labels"
-        [colors]="donutChart.colors"
-        [legend]="donutChart.legend"
-        [dataLabels]="donutChart.dataLabels"
-        [plotOptions]="donutChart.plotOptions"
-      ></apx-chart>
-    </app-card>
-  </div>
-</div>
-
-<div class="row">
   <div class="col-md-6">
     <app-card cardTitle="Monthly Bill Payment" [options]="false">
       <apx-chart
@@ -155,7 +138,7 @@
         [dataLabels]="monthlyBillPaymentChart.dataLabels"
         [plotOptions]="monthlyBillPaymentChart.plotOptions"
       ></apx-chart>
-      <div class="table-responsive">
+      <!-- <div class="table-responsive">
         <table class="table table-bordered">
           <tr class="bg-primary text-white">
             @for(label of labels; track $index){
@@ -170,9 +153,51 @@
             }
           </tr>
         </table>
-      </div>
+      </div> -->
     </app-card>
   </div>
+  <!--<div class="col-md-6">
+    <app-card cardTitle="Bills By Zones" [options]="false">
+      <apx-chart
+        [series]="donutChart.series"
+        [chart]="donutChart.chart"
+        [labels]="donutChart.labels"
+        [colors]="donutChart.colors"
+        [legend]="donutChart.legend"
+        [dataLabels]="donutChart.dataLabels"
+        [plotOptions]="donutChart.plotOptions"
+      ></apx-chart>
+    </app-card>
+  </div>-->
+
+  <div class="col-md-6">
+    <app-card cardTitle="Bills By LGA" [options]="false">
+      <apx-chart
+        [series]="lgaDonutChart.series"
+        [chart]="lgaDonutChart.chart"
+        [labels]="lgaDonutChart.labels"
+        [colors]="lgaDonutChart.colors"
+        [legend]="lgaDonutChart.legend"
+        [dataLabels]="lgaDonutChart.dataLabels"
+        [plotOptions]="lgaDonutChart.plotOptions"
+      ></apx-chart>
+    </app-card>
+  </div>
+  <div class="col-md-6">
+   <app-card cardTitle="Payment By LGA" [options]="false">
+     <apx-chart
+       [series]="lgaPaymentDonutChart.series"
+       [chart]="lgaPaymentDonutChart.chart"
+       [labels]="lgaPaymentDonutChart.labels"
+       [colors]="lgaPaymentDonutChart.colors"
+       [legend]="lgaPaymentDonutChart.legend"
+       [dataLabels]="lgaPaymentDonutChart.dataLabels"
+       [plotOptions]="lgaPaymentDonutChart.plotOptions"
+     ></apx-chart>
+   </app-card>
+ </div>
+
+
   <div class="col-md-6">
     <app-card cardTitle="Property Distribution by Zones" [options]="false">
       <apx-chart
@@ -205,7 +230,42 @@
       </div>
     </app-card>
   </div>
+
+  <div class="col-md-6">
+    <app-card cardTitle="Property Distribution by LGA" [options]="false">
+      <apx-chart
+        [series]="lgaSimpleChart.series"
+        [chart]="lgaSimpleChart.chart"
+        [dataLabels]="lgaSimpleChart.dataLabels"
+        [plotOptions]="lgaSimpleChart.plotOptions"
+        [yaxis]="lgaSimpleChart.yaxis"
+        [legend]="lgaSimpleChart.legend"
+        [fill]="lgaSimpleChart.fill"
+        [stroke]="lgaSimpleChart.stroke"
+        [tooltip]="lgaSimpleChart.tooltip"
+        [xaxis]="lgaSimpleChart.xaxis"
+      ></apx-chart>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <tr class="bg-danger text-white">
+            @for(label of lgaLabels; track $index){
+
+            <td>{{ label }}</td>
+            }
+          </tr>
+          <tr>
+            @for(data of lgaData; track $index){
+
+            <td>{{ (data).toLocaleString() }}</td>
+            }
+          </tr>
+        </table>
+      </div>
+    </app-card>
+  </div>
 </div>
+
+
 
 <div class="row">
   <div class="col-md-8">

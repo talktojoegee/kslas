@@ -74,11 +74,14 @@ export default class DashboardComponent implements OnInit {
   @ViewChild('chart') chart: ChartComponent;
   barSimpleChart: Partial<ChartOptions>;
   zoneSimpleChart: Partial<ChartOptions>;
+  lgaSimpleChart: Partial<ChartOptions>;
   barStackedChart: Partial<ChartOptions>;
   areaAngleChart: Partial<ChartOptions>;
   areaSmoothChart: Partial<ChartOptions>;
   lineAreaChart: Partial<ChartOptions>;
   donutChart: Partial<ChartOptions>;
+  lgaDonutChart: Partial<ChartOptions>;
+  lgaPaymentDonutChart: Partial<ChartOptions>;
   monthlyBillPaymentChart: Partial<ChartOptions>;
 
   APP_CURRENCY = environment.APP_CURRENCY;
@@ -96,6 +99,12 @@ export default class DashboardComponent implements OnInit {
   distributionByLGAData: any;
   subZoneLabels:any = [];
   subZoneData:any = [];
+
+  lgaLabels:any = [];
+  lgaData:any = [];
+
+  LGALabels:any = [];
+  LGAData:any = [];
 
 
   currentYear = new Date().getFullYear();
@@ -332,10 +341,15 @@ export default class DashboardComponent implements OnInit {
     this.apiService.get(`billing/property-distribution/${year}`).subscribe((result:any)=>{
       this.subZoneLabels = [];
       this.subZoneData = [];
-      this.distributionByZonesData = result;
+      this.distributionByZonesData = result.zone;
+      this.distributionByLGAData = result.lga;
       this.distributionByZonesData.map((dt)=>{
         this.subZoneLabels.push(dt.zoneName);
         this.subZoneData.push(dt.totalProperties);
+      });
+      this.distributionByLGAData.map((dt)=>{
+        this.lgaLabels.push(dt.lgaName);
+        this.lgaData.push(dt.totalProperties);
       });
       this.zoneSimpleChart = {
         series: [
@@ -364,6 +378,50 @@ export default class DashboardComponent implements OnInit {
         },
         xaxis: {
           categories: this.subZoneLabels
+        },
+        yaxis: {
+          title: {
+            text: '# of Properties'
+          }
+        },
+        fill: {
+          opacity: 1
+        },
+        tooltip: {
+          y: {
+            formatter: function (val) {
+              return  val.toLocaleString()
+            }
+          }
+        }
+      };
+      this.lgaSimpleChart = {
+        series: [
+          {
+            name: 'Properties',
+            data: this.lgaData
+          },
+        ],
+        chart: {
+          type: 'bar',
+          height: 350
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: '55%'
+          }
+        },
+        dataLabels: {
+          enabled: true
+        },
+        stroke: {
+          show: true,
+          width: 2,
+          colors: ['transparent']
+        },
+        xaxis: {
+          categories: this.lgaLabels
         },
         yaxis: {
           title: {
@@ -446,13 +504,35 @@ export default class DashboardComponent implements OnInit {
   fetchMonthlyBillAmount(year){
     this.apiService.get(`chart-record/${year}`).subscribe((result:any)=>{
       let donutData = result.byZones;
+      let lgaDonutData = result.byLGA;
+      let lgaPaymentDonutData = result.paymentByLGA;
       let labels = [];
       let labelData = [];
+
+      let lgaLabels = [];
+      let lgaData = [];
+
+      let lgaPaymentLabels = [];
+      let lgaPaymentData = [];
+
       donutData.map((val)=>{
         let labelAmount = `${val.sub_zone}: ₦${val.total_bills.toLocaleString()}`;
-        labels.push(labelAmount)
-        labelData.push(val.total_bills)
-      })
+        labels.push(labelAmount);
+        labelData.push(val.total_bills);
+      });
+
+      lgaDonutData.map((val)=>{
+        let amount = `${val.lga_name}: ₦${val.total_bills.toLocaleString()}`;
+        lgaData.push(amount);
+        lgaLabels.push(val.total_bills);
+      });
+
+      lgaPaymentDonutData.map((val)=>{
+        let amount = `${val.lga_name}: ₦${val.amount.toLocaleString()}`;
+        lgaPaymentData.push(amount);
+        lgaPaymentLabels.push(val.amount);
+      });
+
       this.barSimpleChart = {
         series: [
           {
@@ -501,6 +581,7 @@ export default class DashboardComponent implements OnInit {
           }
         }
       };
+
       this.donutChart = {
         chart: {
           type: 'donut',
@@ -526,6 +607,71 @@ export default class DashboardComponent implements OnInit {
         ],
         series: labelData,//[21, 23, 19, 14],
         labels: labels,//['A', 'B', 'C', 'D'],
+        legend: {
+          position: 'left',
+          offsetY: 80
+        }
+      };
+
+
+      this.lgaDonutChart = {
+        chart: {
+          type: 'donut',
+          width: '100%',
+          height: 350
+        },
+        dataLabels: {
+          enabled: true
+        },
+        plotOptions: {
+          pie: {
+            customScale: 0.8,
+            donut: {
+              size: '75%'
+            },
+            offsetY: 20
+          }
+        },
+        colors: ['#00D8B6', '#008FFB', '#FF0000',
+          '#909912', '#190789', '#889199',
+          '#871290', '#165945', '#908078',
+          '#99FFA1', '#121212', '#DEDEDE'
+        ], //lgaData
+        //lgaLabels
+        series:lgaLabels ,//[21, 23, 19, 14],
+        labels: lgaData,//['A', 'B', 'C', 'D'],
+        legend: {
+          position: 'left',
+          offsetY: 80
+        }
+      };
+
+      this.lgaPaymentDonutChart = {
+        chart: {
+          type: 'donut',
+          width: '100%',
+          height: 350
+        },
+        dataLabels: {
+          enabled: true
+        },
+        plotOptions: {
+          pie: {
+            customScale: 0.8,
+            donut: {
+              size: '75%'
+            },
+            offsetY: 20
+          }
+        },
+        colors: ['#00D8B6', '#008FFB', '#FF0000',
+          '#909912', '#190789', '#889199',
+          '#871290', '#165945', '#908078',
+          '#99FFA1', '#121212', '#DEDEDE'
+        ], //lgaData
+        //lgaLabels
+        series:lgaPaymentLabels ,//[21, 23, 19, 14],
+        labels: lgaPaymentData,//['A', 'B', 'C', 'D'],
         legend: {
           position: 'left',
           offsetY: 80

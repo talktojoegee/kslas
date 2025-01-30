@@ -1,1 +1,311 @@
-<p>property-detail works!</p>
+<div class="row mb-3 ">
+  <div class="col-md-12 d-flex justify-content-end">
+    <div class="btn-group">
+      <button (click)="goBack()" class="btn btn-sm btn-secondary"> <i class="feather icon-skip-back"></i>  Go Back </button>
+      <button data-bs-toggle="modal" data-bs-target="#ownerInfo" class="btn btn-sm btn-primary"> <i class="feather icon-user"></i>  Owner Information </button>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 col-lg-12">
+      <app-card cardTitle="Property Information" [options]="false">
+        <div class="row mb-0 property-info-border">
+          <div class="col-md-6 col-sm-12" >
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <label  class="mb-0 wid-100 text-dark fs-16">Owner Name:</label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15">
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary">{{record?.owner}}</a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+
+              <li class="list-group-item">
+                <div class="d-flex align-items-center" >
+                  <div class="flex-shrink-0" >
+                    <label  class="mb-0 wid-100">Owner Email:</label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15" >
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary">{{record?.ownerEmail}}</a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <label  class="mb-0 wid-100 text-dark fs-16">Mobile No.:</label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15">
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary">{{record?.ownerGsm}}</a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="d-flex align-items-center" >
+                  <div class="flex-shrink-0" >
+                    <label  class="mb-0 wid-100">KGTIN:</label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15" >
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary">{{record?.kgTin}}</a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6 col-sm-12" >
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <label  class="mb-0 wid-100 text-dark fs-16">Building Code:</label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15">
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary">{{record?.buildingCode}}</a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="d-flex align-items-center" >
+                  <div class="flex-shrink-0" >
+                    <label  class="mb-0 wid-100">Property Class.:</label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15" >
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary">{{record?.class}}</a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <label  class="mb-0 wid-100 text-dark fs-16">Zone:</label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15">
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary">{{record?.zoneName}}</a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="d-flex align-items-center" >
+                  <div class="flex-shrink-0" >
+                    <label  class="mb-0 wid-100">LGA:</label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15" >
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary">{{record?.lgaName}}</a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="row mb-0 property-info-border">
+          <div class="col-md-6 col-sm-12" >
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <label  class="mb-0 wid-100 text-dark fs-16">Assessment No.:</label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15">
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary">{{record?.assessmentNo}}</a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="d-flex align-items-center" >
+                  <div class="flex-shrink-0" >
+                    <label  class="mb-0 wid-100"><!-- --></label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15" >
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary"><!-- --></a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <label  class="mb-0 wid-100 text-dark fs-16">Address:</label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15">
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary">{{record?.address}}</a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="d-flex align-items-center" >
+                  <div class="flex-shrink-0" >
+                    <label  class="mb-0 wid-100"><!-- --></label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15" >
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary"><!-- --></a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="row mb-0 property-info-border">
+          <div class="col-md-6 col-sm-12" >
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <label  class="mb-0 wid-100 text-dark fs-16">Billing Code.:</label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15">
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary">{{record?.pavCode}}</a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <!--"zoneName": "A2",
+              "occupancy": "Owner",
+              "class": "Commercial",
+              "kgTin": "N-000000055",
+              "ownerEmail": "prophetpius@gmail.com",
+              "ownerGsm": "234",
+              "owner": "Pius Ekeh Junior",
+              "image": "DCIM\/dbproject3_20241214093148281.jpg",
+              "borehole": 1,
+              "power": 1,
+              "refuse": null,
+              "storey": 0,
+              "water": 0,
+              "payStatus": "Enumerated",
+              "": "7"-->
+
+              <li class="list-group-item">
+                <div class="d-flex align-items-center" >
+                  <div class="flex-shrink-0" >
+                    <label  class="mb-0 wid-100">Size:</label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15" >
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary">{{record?.size}}</a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <label  class="mb-0 wid-100 text-dark fs-16">Building Age:</label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15">
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary">{{record?.buildingAge}}</a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="d-flex align-items-center" >
+                  <div class="flex-shrink-0" >
+                    <label  class="mb-0 wid-100"><!-- --></label>
+                  </div>
+                  <div class="flex-grow-1 m-l-15" >
+                    <p class="mb-0 d-flex align-items-center gap-2">
+                      <a href="javascript:" class="text-secondary"><!-- --></a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </app-card>
+
+
+
+  </div>
+</div>
+
+<p-toast></p-toast>
+
+
+
+<div class="modal fade" id="ownerInfo" tabindex="-1"  aria-labelledby="decline" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary ">
+        <h5 class="modal-title text-uppercase text-white" id="declineModalLabel">Owner Information</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <div class="form-group">
+            <label for="kgtin">KGTIN <sup class="text-danger">*</sup></label>
+            <input type="text" formControlName="kgtin" id="kgtin" name="kgtin" placeholder="Owner KGTIN" class="form-control shadow-none">
+          </div>
+
+          <div class="form-group">
+            <label for="fullName">Full Name <sup class="text-danger">*</sup></label>
+            <input type="text" id="fullName" formControlName="name" name="fullName" placeholder="Owner Full Name" class="form-control shadow-none">
+          </div>
+
+          <div class="form-group">
+            <label for="phoneNo">Phone No. <sup class="text-danger">*</sup></label>
+            <input type="text" id="phoneNo" formControlName="mobileNo" name="phoneNo" placeholder="Phone No." class="form-control shadow-none">
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email <sup class="text-danger">*</sup> </label>
+            <input type="text" id="email" formControlName="email" name="email" placeholder="Email" class="form-control shadow-none">
+          </div>
+
+          <div class="form-group d-flex justify-content-center">
+            <button type="button" (click)="handleOwnerChanges()" [disabled]="isFormSubmitted "  class="btn btn-success"> <i class="feather icon-check"></i> Save changes</button>
+            <button class="btn btn-secondary btn-lg btn-block " disabled *ngIf="isFormSubmitted">Submitting...</button>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+

@@ -103,8 +103,8 @@ const NavigationItems = [
     icon: 'icon-users',
     children: [
       {
-        id: 'owner-management',
-        title: 'Owner Management',
+        id: 'property-management',
+        title: 'Property Management',
         type: 'collapse',
         icon: 'feather icon-users',
         children: [
@@ -124,13 +124,13 @@ const NavigationItems = [
       }
     ]
   },
-  {
+/*  {
     id: 'bills',
     //title: 'Bills',
     type: 'group',
     icon: 'icon-bookmark',
 
-  },
+  },*/
   {
     id: 'synchronization',
     title: 'Billing',
@@ -342,6 +342,52 @@ const NavigationItems = [
             title: 'Objected Bills',
             type: 'item',
             url: '/billings/objected'
+          },
+        ]
+      }
+    ]
+  },
+  {
+    id: 'report',
+    title: 'Report',
+    type: 'group',
+    icon: 'icon-chart',
+    children: [
+      {
+        id: 'report-system',
+        title: 'Report',
+        type: 'collapse',
+        icon: 'feather icon-activity',
+        children: [
+          {
+            id: 'payment',
+            title: 'Payments',
+            type: 'item',
+            url: '#'
+          },
+          {
+            id: 'statement',
+            title: 'Statements',
+            type: 'item',
+            url: '#'
+          },
+          {
+            id: 'report-property-list',
+            title: 'Property List',
+            type: 'item',
+            url: '#'
+          },
+          {
+            id: 'report-property-exception',
+            title: 'Property Exception',
+            type: 'item',
+            url: '#'
+          },
+          {
+            id: 'report-objected-bills',
+            title: 'Objected Bills',
+            type: 'item',
+            url: '#'
           },
         ]
       }
