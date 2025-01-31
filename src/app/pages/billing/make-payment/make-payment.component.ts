@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {CardComponent} from "../../../theme/shared/components/card/card.component";
 import {CommonModule, Location} from "@angular/common";
 import {ApiService} from "../../../services/api.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import { Angular4PaystackModule } from 'angular4-paystack';
 import {environment} from "../../../../environments/environment.development";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
@@ -34,6 +34,7 @@ export class MakePaymentComponent implements OnInit{
               private route: ActivatedRoute,
               private location:Location,
               private fb: FormBuilder,
+              public router: Router,
               private messageService: MessageService
               ) {
   }
@@ -50,6 +51,12 @@ export class MakePaymentComponent implements OnInit{
   }
   goBack(): void {
     this.location.back();
+  }
+
+  delayAndRedirect(url) {
+    setTimeout(() => {
+      this.router.navigateByUrl(url).then(r => {});
+    }, 1000);
   }
 
   paymentInit() {
@@ -109,11 +116,16 @@ export class MakePaymentComponent implements OnInit{
       this.formValue = this.form.value;
       this.apiService.post(`billing/make-payment`, this.formValue).subscribe((res:any)=>{
         this.isFormSubmitted = false;
+
+
         this.messageService.add({
           severity: 'success',
           summary: 'Action successful',
-          detail: res.message
+          detail: "Payment successful"
         });
+
+
+        this.delayAndRedirect('/billings/approve');
 
       },(error:any)=>{
         this.isFormSubmitted = false;
