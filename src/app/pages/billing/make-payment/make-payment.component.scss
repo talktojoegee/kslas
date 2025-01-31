@@ -1,0 +1,82 @@
+.btn-primary{
+  background: #72C586 !important;
+  border-color: #72C586 !important;
+}
+.bill-heading-two{
+  color: #123319 !important;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing:5px;
+}
+.bill-heading-three{
+  color: #3870C2 !important;
+  font-size:14px;
+}
+.bill-heading-four{
+  color: #181518 !important;
+  font-size:11px;
+}
+.bill-heading-five{
+  color: #151415 !important;
+  font-size:11px;
+}
+
+
+.bill-wrapper{
+  width:100%;
+  min-height: 200px;
+  max-height: auto;
+  border: 1px solid #6F6E6F;
+  border-radius: 30px;
+  margin-top: 10px;
+}
+.owner-details{
+  font-size: 14px;
+  font-weight: bold;
+  text-align:center;
+  color: #030202;
+  margin-top: 5px;
+  border-bottom: 1px solid #030202;
+}
+.owner-labels{
+  font-size: 14px !important;
+  font-weight: bold;
+}
+.label-value{
+  color: #1a191a !important;
+  font-size:12px;
+}
+.watermark{
+  width: 100%;
+  height: auto;
+  display: block;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity:0.8
+}
+
+.watermark-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.watermark-background {
+  /*width: 794px;*/
+  width: inherit;
+  height: 100%;
+  background-image: url('../../../../assets/images/kogi-watermark.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+@media print {
+  .watermark-background {
+    width: 210mm; /* A4 width in mm */
+    height: 297mm; /* A4 height in mm */
+    background-size: cover; /* Ensure the background scales appropriately for printing */
+  }
+}

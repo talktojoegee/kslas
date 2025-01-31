@@ -240,7 +240,7 @@
                     <div class="col col-md-8">
                       <div class="form-group mb-3">
                         <label for="">Year: <sup class="text-danger">*</sup></label>
-                        <input formControlName="year" type="number" class="form-control shadow-none" placeholder="Year">
+                        <input formControlName="year" min="0" type="number" class="form-control shadow-none" placeholder="Year">
                         <div *ngIf="processBillForm.controls['year'].touched && processBillForm.controls['year'].errors?.['required']" class="text-danger">
                           Year is required
                         </div>

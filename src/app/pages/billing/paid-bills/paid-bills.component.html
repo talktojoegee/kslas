@@ -82,7 +82,7 @@
             <div class="flex">
              <span class="p-input-icon-left ml-auto">
                 <input
-                  style="padding:5px;"
+                  style="padding:5px; font-size:12px;"
                   pInputText
                   type="text"
                   (input)="billTable.filterGlobal($any($event.target).value, 'contains')"
@@ -100,7 +100,7 @@
               <th scope="col">Category</th>
               <th scope="col">Owner</th>
               <th pSortableColumn="billAmount" style="text-align:right;" scope="col">Bill Amount({{ APP_CURRENCY }}) <p-sortIcon field="billAmount" /></th>
-              <th scope="col">Payment</th>
+              <th scope="col">Payment({{ APP_CURRENCY }})</th>
               <th style="text-align:right;" scope="col">Balance({{ APP_CURRENCY }})</th>
               <th  scope="col">Action</th>
             </tr>
@@ -115,7 +115,7 @@
               <td>{{item?.categoryName}}</td>
               <td>{{item?.owner}}</td>
               <td style="text-align: right;">{{item?.billAmount.toLocaleString()}}</td>
-              <td>0</td>
+              <td>{{ item?.payment.toLocaleString() }}</td>
               <td style="text-align: right;">{{item?.balance.toLocaleString()}}</td>
               <td>
                 <a [routerLink]="['/billings/details', item.url]">View</a>

@@ -175,7 +175,7 @@ export class BillDetailComponent implements OnInit{
       this.messageService.add({
         severity: 'success',
         summary: 'Action successful',
-        detail: "Objection verified"
+        detail: "Bill verified"
       });
       this.closeModal('verify');
       this.delayAndRedirect('/billings/verify')
@@ -204,7 +204,7 @@ export class BillDetailComponent implements OnInit{
       this.messageService.add({
         severity: 'success',
         summary: 'Action successful',
-        detail: "Objection verified"
+        detail: "Bill verified"
       });
       this.closeModal('decline');
       this.delayAndRedirect('/billings/verify')
@@ -231,7 +231,7 @@ export class BillDetailComponent implements OnInit{
       this.messageService.add({
         severity: 'success',
         summary: 'Action successful',
-        detail: "Objection authorized"
+        detail: "Bill authorized"
       });
       this.closeModal('authorize');
       this.delayAndRedirect('/billings/authorize')
@@ -259,7 +259,7 @@ export class BillDetailComponent implements OnInit{
       this.messageService.add({
         severity: 'success',
         summary: 'Action successful',
-        detail: "Objection approved"
+        detail: "Bill approved"
       });
       this.closeModal('approve');
       this.delayAndRedirect('/billings/approve')

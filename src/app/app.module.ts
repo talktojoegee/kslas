@@ -29,6 +29,8 @@ import { ToggleFullScreenDirective } from './theme/shared/components/full-screen
 import {provideAnimationsAsync} from "@angular/platform-browser/animations/async";
 //import {PrimeNGConfig} from "primeng/api";
 import {RouterModule} from "@angular/router";
+import {Angular4PaystackModule} from "angular4-paystack";
+import {environment} from "../environments/environment.development";
 
 @NgModule({
   declarations: [
@@ -48,7 +50,10 @@ import {RouterModule} from "@angular/router";
     NavSearchComponent,
     ToggleFullScreenDirective
   ],
-  imports: [RouterModule, BrowserModule, AppRoutingModule, FormsModule, ReactiveFormsModule, SharedModule, BrowserAnimationsModule, HttpClientModule],
+  imports: [RouterModule, BrowserModule, AppRoutingModule, FormsModule, ReactiveFormsModule,
+    SharedModule, BrowserAnimationsModule, HttpClientModule,
+    Angular4PaystackModule.forRoot(environment.PAYSTACK_PUBLIC_KEY),
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS, // Correctly imported

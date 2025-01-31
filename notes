@@ -1,0 +1,11 @@
+npm config set proxy null=true
+npm config set https-proxy null=true
+npm config set registry http://registry.npmjs.org/=true
+and then execute npm install -g react-native-cli=true
+proxy=null
+https-proxy=null
+registry=https://registry.npmjs.org/
+prefix=~/.npm-global
+
+
+curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
