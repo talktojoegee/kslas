@@ -1,0 +1,82 @@
+<div class="row">
+  <div class="col-sm-4 col-md-4">
+    <app-card class="text-uppercase" cardTitle="Add New Depreciation" [options]="false">
+      <div class="row">
+        <div class="col-md-12">
+          <form [formGroup]="depreciationForm">
+            <div class="form-group">
+              <label for="buildingAgeFrom">Building Age From <sup class="text-danger">*</sup></label>
+              <input name="ageFrom"  formControlName="ageFrom" autocomplete="off" type="number" min="0" id="buildingAgeFrom" placeholder="Building Age From" class="form-control shadow-none mt-2">
+              @if(depreciationForm.controls['ageFrom'].touched && depreciationForm.controls['ageFrom'].errors?.['required']){
+              <div  class=" text-danger text-capitalize">
+                Building age from is required
+              </div>
+              }
+            </div>
+            <div class="form-group">
+              <label for="buildingAgeTo">Building Age To <sup class="text-danger">*</sup></label>
+              <input name="ageTo" min="0"  formControlName="ageTo" autocomplete="off" type="number" id="buildingAgeTo" placeholder="Building Age To" class="form-control shadow-none mt-2">
+              @if(depreciationForm.controls['ageTo'].touched && depreciationForm.controls['ageTo'].errors?.['required']){
+              <div  class=" text-danger text-capitalize">
+                Building age to is required
+              </div>
+              }
+            </div>
+            <div class="form-group">
+              <label for="depreciationRate">Depreciation Rate <sup class="text-danger">*</sup></label>
+              <input name="depreciationRate" min="0" step="0.01"  formControlName="depreciationRate" autocomplete="off" type="number" id="depreciationRate" placeholder="Depreciation Rate" class="form-control shadow-none mt-2">
+              @if(depreciationForm.controls['depreciationRate'].touched && depreciationForm.controls['depreciationRate'].errors?.['required']){
+              <div  class=" text-danger text-capitalize">
+                Depreciation rate is required
+              </div>
+              }
+            </div>
+            <div class="form-group d-flex justify-content-center">
+              <button (click)="submitData()" [disabled]="depreciationForm.invalid " *ngIf="!isFormSubmitted" type="button" class="btn btn-primary btn-square"> <i class="feather icon-check-circle"></i> Submit</button>
+              <button type="button" disabled style="cursor: not-allowed" *ngIf="isFormSubmitted" class="btn btn-primary"><i class="fa fa-spinner fa-spin"></i> Processing  </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </app-card>
+  </div>
+
+
+  <div class="col-sm-8 col-md-8">
+    <app-card class="text-uppercase" cardTitle="Manage Depreciation" [options]="false">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Rate(%)</th>
+                <th scope="col">Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              @for(item of depreciationList; track $index){
+              <tr>
+                <th>{{$index + 1}}</th>
+                        <td class="text-capitalize">{{ item.ageFrom }}</td>
+                        <td class="text-capitalize">{{ item.ageTo }}</td>
+                        <td class="text-capitalize">{{ item.rate }}</td>
+                        <td>
+                          <button class="btn btn-sm btn-glow btn-info" disabled type="button">No Action</button>
+                        </td>
+                      </tr>
+              }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </app-card>
+  </div>
+  <p-toast></p-toast>
+</div>
+
+

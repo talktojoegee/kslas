@@ -52,7 +52,7 @@
               <th pSortableColumn="zoneName" scope="col">Zone <p-sortIcon field="zoneName" /></th>
               <th pSortableColumn="categoryName" scope="col">Category<p-sortIcon field="categoryName" /></th>
               <th pSortableColumn="occupancy" scope="col">Occupancy<p-sortIcon field="occupancy" /></th>
-              <th scope="col">Rate(%)</th>
+              <th scope="col">Charge Rate(%)</th>
               <th scope="col">Assess Value({{ APP_CURRENCY }})</th>
               <th pSortableColumn="billAmount" style="text-align:right;" scope="col">Bill Amount({{ APP_CURRENCY }}) <p-sortIcon field="billAmount" /></th>
               <th  scope="col">Action</th>
@@ -62,7 +62,7 @@
           <ng-template pTemplate="body" let-rowIndex="rowIndex" let-item>
             <tr style="font-size:14px;">
               <td>{{skip+rowIndex+1}}</td>
-              <td>{{item?.assessmentNo}}</td>
+              <td>{{item?.assessmentNo.toUpperCase()}}</td>
               <td>{{item?.buildingCode}}</td>
               <td>{{item?.year}}</td>
               <td>{{item?.pavCode}}</td>

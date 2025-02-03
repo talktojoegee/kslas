@@ -8,11 +8,14 @@ import html2canvas from 'html2canvas';
 import {MessageService} from "primeng/api";
 import {ToastModule} from "primeng/toast";
 import {delay} from "rxjs";
+import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {CardComponent} from "../../../theme/shared/components/card/card.component";
+import {Button} from "primeng/button";
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-bill-detail',
-  imports: [RouterLink, CommonModule,ToastModule],
+  imports: [RouterLink, CommonModule,ToastModule, CardComponent,  Button, ReactiveFormsModule],
   templateUrl: './bill-detail.component.html',
   styleUrl: './bill-detail.component.scss',
   providers:[MessageService]
@@ -42,6 +45,7 @@ export class BillDetailComponent implements OnInit{
   url:string = 'default';
   statusInt : number = 0;
   billId : number = 0;
+  returned : number = 0;
   propertyClass : string = '';
   occupancy : string = '';
 
@@ -58,6 +62,17 @@ export class BillDetailComponent implements OnInit{
   year: number = 0;
   lgaName: string = '';
   balance: number = 0;
+  formValue: any;
+
+  form:FormGroup = new FormGroup({
+    lucAmount: new FormControl('', [Validators.required]),
+    chargeRate: new FormControl("", [Validators.required]),
+    assessedValue: new FormControl("",[Validators.required]),
+    //action: new FormControl(""),
+    billId: new FormControl(""),
+    actionedBy: new FormControl(""),
+  });
+
   constructor(private apiService: ApiService,
               private route: ActivatedRoute,
               private messageService: MessageService,
@@ -67,7 +82,6 @@ export class BillDetailComponent implements OnInit{
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      //this.url = params.get('url');
       this.url = this.route.snapshot.paramMap.get('url') || '';
       this.loadBill();
     });
@@ -99,6 +113,7 @@ export class BillDetailComponent implements OnInit{
       this.objection =  res.data.objection;
       this.assessmentYear =  res.data.year;
       this.url = res.data.url;
+      this.returned = res.data.returned;
 
       this.propertyClass = res.data.class;
       this.occupancy = res.data.occupancy;
@@ -109,6 +124,15 @@ export class BillDetailComponent implements OnInit{
       this.zone =  res.data.zone;
       this.billedBy =  res.data.billedBy;
       this.statusInt =  res.data.statusInt;
+      //load default values
+      this.form.setValue({
+        lucAmount:res.data?.billAmount || 0,
+        chargeRate:res.data?.chargeRate || 0,
+        assessedValue:res.data?.assessValue || 0,
+        billId:res.data?.billId,
+        actionedBy:this.apiService.getItem('uuid'),
+      });
+      console.log(this.form);
 
     },error=>{
 
@@ -162,7 +186,7 @@ export class BillDetailComponent implements OnInit{
 
 
 
-  verifyObjection(){
+  verifyBill(){
     let requestId = this.billId;
     const obj = {
       requestId:requestId,
@@ -191,7 +215,35 @@ export class BillDetailComponent implements OnInit{
 
 
 
-  declineObjection(){
+  returnBill(){
+    let requestId = this.billId;
+    const obj = {
+      requestId:requestId,
+      action:5,
+      actionedBy:this.apiService.getItem('uuid')
+    };
+    this.isFormSubmitted = true;
+    this.apiService.post(`billing/action-bill`,obj).subscribe((res:any)=>{
+      this.isFormSubmitted = false;
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Action successful',
+        detail: "Bill returned"
+      });
+      this.closeModal('return');
+      this.delayAndRedirect('/billings/verify')
+    },error=>{
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Whoops!',
+        detail: "Something went wrong."
+      });
+      this.isFormSubmitted = false;
+    })
+  }
+
+
+  declineBill(){
     let requestId = this.billId;
     const obj = {
       requestId,
@@ -218,7 +270,7 @@ export class BillDetailComponent implements OnInit{
     })
   }
 
-  authorizeObjection(){
+  authorizeBill(){
     this.isFormSubmitted = true;
     let requestId = this.billId;
     const obj = {
@@ -246,7 +298,7 @@ export class BillDetailComponent implements OnInit{
     })
   }
 
-  approveObjection(){
+  approveBill(){
     this.isFormSubmitted = true;
     let requestId = this.billId;
     const obj = {
@@ -357,6 +409,30 @@ export class BillDetailComponent implements OnInit{
     setTimeout(() => {
       this.router.navigateByUrl(url).then(r => {});
     }, 1000);
+  }
+
+
+  handleBillChanges(){
+    this.isFormSubmitted = true;
+    this.formValue = this.form.value;
+    this.apiService.post(`billing/update-bill-changes`,this.formValue).subscribe((res:any)=>{
+      this.isFormSubmitted = false;
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Action successful',
+        detail: "Changes saved"
+      });
+      this.closeModal('editBill');
+      this.location.back();
+
+    },error=>{
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Whoops!',
+        detail: "Something went wrong."
+      });
+      this.isFormSubmitted = false;
+    })
   }
 
 }

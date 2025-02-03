@@ -35,6 +35,8 @@ import {VerifyBillsComponent} from "./pages/billing/bills/verify-bills/verify-bi
 import {AuthorizeBillsComponent} from "./pages/billing/bills/authorize-bills/authorize-bills.component";
 import {ApproveBillsComponent} from "./pages/billing/bills/approve-bills/approve-bills.component";
 import {PropertyDetailComponent} from "./pages/owner-management/property-detail/property-detail.component";
+import {ReturnedBillsComponent} from "./pages/billing/bills/returned-bills/returned-bills.component";
+import {DepreciationComponent} from "./pages/settings/depreciation/depreciation.component";
 //import {ObjectedBillsComponent} from "./pages/billing/objected-bills/objected-bills.component";
 
 const routes: Routes = [
@@ -122,6 +124,11 @@ const routes: Routes = [
             component: PropertyAssessmentValueComponent,
             canActivate:[AuthGuard],
           },
+          {
+            path: 'depreciation',
+            component: DepreciationComponent,
+            canActivate:[AuthGuard],
+          },
         ],
       },
       {
@@ -182,6 +189,11 @@ const routes: Routes = [
           {
             path: "pending",
             component: PendingBillsComponent,
+            canActivate:[AuthGuard],
+          },
+          {
+            path: "returned-bills",
+            component: ReturnedBillsComponent,
             canActivate:[AuthGuard],
           },
           {

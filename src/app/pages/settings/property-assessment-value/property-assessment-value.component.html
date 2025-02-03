@@ -2,13 +2,13 @@
   <div class="col-md-12 col-lg-12 col-sm-12">
     <div class="row">
       <div class="col-md-12">
-        <button data-bs-toggle="modal" data-bs-target="#pavModal" class="btn btn-primary float-right mb-3"> <i class="ri-add-line"></i> Add New PAV </button>
+        <button data-bs-toggle="modal" data-bs-target="#pavModal" class="btn btn-primary float-right mb-3"> <i class="ri-add-line"></i> Add New Billing Setup </button>
       </div>
     </div>
     <div class="card">
       <div class="card-header d-flex justify-content-between">
         <div class="header-title">
-          <h6 class="card-title text-uppercase">Manage Property Assessment Value(PAV)</h6>
+          <h6 class="card-title text-uppercase">Manage Billing Setup</h6>
         </div>
       </div>
       <div class="card-body">
@@ -18,12 +18,16 @@
             <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">PAV Code</th>
+              <th scope="col">Billing Code</th>
               <th scope="col">Class</th>
               <th scope="col">Zone</th>
               <th scope="col">Occupancy</th>
               <th style="text-align: right !important;" scope="col">Amount({{ APP_CURRENCY }} )</th>
-              <th style="text-align: right !important;" scope="col">Rate(%)</th>
+              <th style="text-align: right !important;" scope="col">CR(%)</th>
+              <th style="text-align: right !important;" scope="col">BR</th>
+              <th style="text-align: right !important;" scope="col">LR</th>
+              <th style="text-align: right !important;" scope="col">BA%</th>
+              <th style="text-align: right !important;" scope="col">RR%</th>
               <th scope="col">Action</th>
             </tr>
             </thead>
@@ -38,9 +42,12 @@
               <td>{{ item.occupancy }}</td>
               <td style="text-align: right !important;">{{ item?.assessedAmount.toLocaleString() }}</td>
               <td style="text-align: right !important;">{{ item.valueRate }}</td>
-
+              <td>{{ item.br }}</td>
+              <td>{{ item.lr }}</td>
+              <td>{{ item.ba }}</td>
+              <td>{{ item.rr }}</td>
               <td>
-                <a href=""><i class="ri-edit-line text-warning"></i></a>
+                <a style="cursor:pointer;" (click)="launchModal(item)"    ><i class="feather icon-settings text-muted"></i></a>
               </td>
             </tr>
             }
@@ -54,73 +61,242 @@
   <p-toast></p-toast>
 
   <div class="modal fade" id="pavModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalScrollableTitle">Add New Property Assessment Value(PAV)</h5>
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+      <div class="modal-content ">
+        <div class="modal-header bg-primary ">
+          <h5 class="modal-title text-white" id="exampleModalScrollableTitle">Add New Billing Code</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
         </div>
         <div class="modal-body">
           <form [formGroup]="pavForm" >
-            <div class="form-group mb-3">
-              <label for="title"> PAV Code<sup class="text-danger">*</sup>:</label>
-              <input name="pav_code" id="pav_code"  formControlName="pav_code" type="text" class="form-control" placeholder=" PAV Code">
-              <div *ngIf="pavForm.controls['pav_code'].touched && pavForm.controls['pav_code'].errors?.['required']" class="text-danger">
-                PAV code is required
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="title"> Billing Code<sup class="text-danger">*</sup>:</label>
+                  <input name="pav_code" id="pav_code"  formControlName="pav_code" type="text" class="form-control" placeholder=" Billing Code">
+                  <div *ngIf="pavForm.controls['pav_code'].touched && pavForm.controls['pav_code'].errors?.['required']" class="text-danger">
+                    Billing code is required
+                  </div>
+                  <!-- Server-side error -->
+
+                </div>
               </div>
-              <!-- Server-side error -->
-
-            </div>
-
-            <div class="form-group mb-3">
-              <label for="assessed_amount"> Assessed Amount<sup class="text-danger">*</sup>:</label>
-              <input name="assessed_amount"  id="assessed_amount"  formControlName="assessed_amount" type="number" step="0.01" class="form-control" placeholder=" Assessed Amount">
-              <div *ngIf="pavForm.controls['assessed_amount'].touched && pavForm.controls['assessed_amount'].errors?.['required']" class="text-danger">
-                Assessed amount is required
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="assessed_amount"> Assessed Amount<sup class="text-danger">*</sup>:</label>
+                  <input name="assessed_amount"  id="assessed_amount"  formControlName="assessed_amount" type="number" step="0.01" class="form-control" placeholder=" Assessed Amount">
+                  <div *ngIf="pavForm.controls['assessed_amount'].touched && pavForm.controls['assessed_amount'].errors?.['required']" class="text-danger">
+                    Assessed amount is required
+                  </div>
+                </div>
               </div>
-              <!-- Server-side error -->
-            </div>
-            <div class="form-group mb-3">
-              <label for="value_rate"> Rate<sup class="text-danger">*</sup>:</label>
-              <input name="value_rate"  id="value_rate"  formControlName="value_rate" type="number" step="0.01" class="form-control" placeholder=" Rate">
-              <div *ngIf="pavForm.controls['value_rate'].touched && pavForm.controls['value_rate'].errors?.['required']" class="text-danger">
-                Rate is required
+
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="ba"> BA Rate<sup class="text-danger">*</sup>:</label>
+                  <input name="ba"  id="ba"  formControlName="ba" type="number" step="0.01" class="form-control" placeholder="BA">
+                  <div *ngIf="pavForm.controls['ba'].touched && pavForm.controls['ba'].errors?.['required']" class="text-danger">
+                    BA is required
+                  </div>
+                </div>
               </div>
-              <!-- Server-side error -->
-            </div>
-            <div class="form-group mb-3">
-              <label for="class_id"> Property Class<sup class="text-danger">*</sup>:</label>
-              <select  name="class_id" formControlName="class_id" id="class_id" class="form-control ">
-                <option disabled selected>--Select class--</option>
-                <option *ngFor="let c of classList" [value]="c.id">{{c.className}}</option>
-              </select>
 
-              <!-- Server-side error -->
-            </div>
-            <div class="form-group mb-3">
-              <label for="zone"> Zone<sup class="text-danger">*</sup>:</label>
-              <p-multiSelect  [options]="zoneOptions" styleClass="w-full md:w-80"  formControlName="zone"  placeholder="Select Zones"></p-multiSelect>
-              <!-- <select  name="zone" formControlName="zone" id="zone" class="form-control ">
-                 <option disabled selected>&#45;&#45;Select zone &#45;&#45;</option>
-                 <option *ngFor="let z of zoneList" [value]="z.id">{{z.zoneName}} - {{z.subZone}}</option>
-               </select>-->
-
-
-
-              <!-- Server-side error -->
-            </div>
-
-            <div class="form-group mb-3">
-              <label for="description"> Description<sup class="text-danger">*</sup>:</label>
-              <textarea name="description" style="resize:none;"  id="description"  formControlName="description"   class="form-control" placeholder=" Type description..."></textarea>
-              <div *ngIf="pavForm.controls['description'].touched && pavForm.controls['description'].errors?.['required']" class="text-danger">
-                Property class is required
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="rr"> RR Rate<sup class="text-danger">*</sup>:</label>
+                  <input name="rr"  id="rr"  formControlName="rr" type="number" step="0.01" class="form-control" placeholder="RR">
+                  <div *ngIf="pavForm.controls['rr'].touched && pavForm.controls['rr'].errors?.['required']" class="text-danger">
+                    RR is required
+                  </div>
+                </div>
               </div>
-              <!-- Server-side error -->
+
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="lr"> LR<sup class="text-danger">*</sup>:</label>
+                  <input name="lr"  id="lr"  formControlName="lr" type="number" step="0.01" class="form-control" placeholder="LR">
+                  <div *ngIf="pavForm.controls['lr'].touched && pavForm.controls['lr'].errors?.['required']" class="text-danger">
+                    LR is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="br"> BR<sup class="text-danger">*</sup>:</label>
+                  <input name="br"  id="br"  formControlName="br" type="number" step="0.01" class="form-control" placeholder="BR">
+                  <div *ngIf="pavForm.controls['br'].touched && pavForm.controls['br'].errors?.['required']" class="text-danger">
+                    BR is required
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="value_rate">Charge Rate<sup class="text-danger">*</sup>:</label>
+                  <input name="value_rate"  id="value_rate"  formControlName="value_rate" type="number" step="0.01" class="form-control" placeholder=" Rate">
+                  <div *ngIf="pavForm.controls['value_rate'].touched && pavForm.controls['value_rate'].errors?.['required']" class="text-danger">
+                    Rate is required
+                  </div>
+                  <!-- Server-side error -->
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="class_id"> Property Class<sup class="text-danger">*</sup>:</label>
+                  <select  name="class_id" formControlName="class_id" id="class_id" class="form-control ">
+                    <option disabled selected>--Select class--</option>
+                    <option *ngFor="let c of classList" [value]="c.id">{{c.className}}</option>
+                  </select>
+
+                  <!-- Server-side error -->
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="zone"> Zone<sup class="text-danger">*</sup>:</label>
+                  <p-multiSelect  [options]="zoneOptions" styleClass="w-full md:w-80"  formControlName="zone"  placeholder="Select Zones"></p-multiSelect>
+
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="description"> Description<sup class="text-danger">*</sup>:</label>
+                  <textarea name="description" style="resize:none;"  id="description"  formControlName="description"   class="form-control" placeholder=" Type description..."></textarea>
+                  <div *ngIf="pavForm.controls['description'].touched && pavForm.controls['description'].errors?.['required']" class="text-danger">
+                    Enter a brief description
+                  </div>
+                  <!-- Server-side error -->
+                </div>
+              </div>
+
             </div>
             <div class="d-flex justify-content-center">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               <button type="button" (click)="onSavePAV()" [disabled]="pavForm.invalid " *ngIf="!isFormSubmitted" class="btn btn-primary">Submit </button>
+              <button type="button" disabled style="cursor: not-allowed" *ngIf="isFormSubmitted" class="btn btn-primary"><i class="fa fa-spinner fa-spin"></i> Processing  </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editBillingSetup" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+      <div class="modal-content ">
+        <div class="modal-header bg-warning ">
+          <h5 class="modal-title text-white" id="editBillingSetupTitle">Edit Billing Setup</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="editForm" >
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="title"> Billing Code<sup class="text-danger">*</sup>:</label>
+                  <input name="pav_code" id="pav_code"  formControlName="pav_code" type="text" class="form-control" placeholder=" Billing Code">
+                  <div *ngIf="editForm.controls['pav_code'].touched && editForm.controls['pav_code'].errors?.['required']" class="text-danger">
+                    Billing code is required
+                  </div>
+                  <!-- Server-side error -->
+
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="assessed_amount"> Assessed Amount<sup class="text-danger">*</sup>:</label>
+                  <input name="assessed_amount"  id="assessed_amount"  formControlName="assessed_amount" type="number" step="0.01" class="form-control" placeholder=" Assessed Amount">
+                  <div *ngIf="editForm.controls['assessed_amount'].touched && editForm.controls['assessed_amount'].errors?.['required']" class="text-danger">
+                    Assessed amount is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="ba"> BA Rate<sup class="text-danger">*</sup>:</label>
+                  <input name="ba"  id="ba"  formControlName="ba" type="number" step="0.01" class="form-control" placeholder="BA">
+                  <div *ngIf="editForm.controls['ba'].touched && editForm.controls['ba'].errors?.['required']" class="text-danger">
+                    BA is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="rr"> RR Rate<sup class="text-danger">*</sup>:</label>
+                  <input name="rr"  id="rr"  formControlName="rr" type="number" step="0.01" class="form-control" placeholder="RR">
+                  <div *ngIf="editForm.controls['rr'].touched && editForm.controls['rr'].errors?.['required']" class="text-danger">
+                    RR is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="lr"> LR<sup class="text-danger">*</sup>:</label>
+                  <input name="lr"  id="lr"  formControlName="lr" type="number" step="0.01" class="form-control" placeholder="LR">
+                  <div *ngIf="editForm.controls['lr'].touched && editForm.controls['lr'].errors?.['required']" class="text-danger">
+                    LR is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="br"> BR<sup class="text-danger">*</sup>:</label>
+                  <input name="br"  id="br"  formControlName="br" type="number" step="0.01" class="form-control" placeholder="BR">
+                  <div *ngIf="editForm.controls['br'].touched && editForm.controls['br'].errors?.['required']" class="text-danger">
+                    BR is required
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="value_rate">Charge Rate<sup class="text-danger">*</sup>:</label>
+                  <input name="value_rate"  id="value_rate"  formControlName="value_rate" type="number" step="0.01" class="form-control" placeholder=" Rate">
+                  <div *ngIf="editForm.controls['value_rate'].touched && editForm.controls['value_rate'].errors?.['required']" class="text-danger">
+                    Rate is required
+                  </div>
+                  <!-- Server-side error -->
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="class_id"> Property Class<sup class="text-danger">*</sup>:</label>
+                  <select  name="class_id" formControlName="class_id" id="class_id" class="form-control ">
+                    <option disabled selected>--Select class--</option>
+                    <option *ngFor="let c of classList" [value]="c.id">{{c.className}}</option>
+                  </select>
+
+                  <!-- Server-side error -->
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="zone"> Zone<sup class="text-danger">*</sup>:</label>
+                  <p-multiSelect  [options]="zoneOptions" styleClass="w-full md:w-80"  formControlName="zone"  placeholder="Select Zones"></p-multiSelect>
+
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="description"> Description<sup class="text-danger">*</sup>:</label>
+                  <textarea name="description" style="resize:none;"  id="description"  formControlName="description"   class="form-control" placeholder=" Type description..."></textarea>
+                  <div *ngIf="editForm.controls['description'].touched && editForm.controls['description'].errors?.['required']" class="text-danger">
+                    Enter a brief description
+                  </div>
+                  <!-- Server-side error -->
+                </div>
+              </div>
+
+            </div>
+            <div class="d-flex justify-content-center">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" (click)="onSaveChanges()" [disabled]="editForm.invalid " *ngIf="!isFormSubmitted" class="btn btn-primary">Save changes </button>
               <button type="button" disabled style="cursor: not-allowed" *ngIf="isFormSubmitted" class="btn btn-primary"><i class="fa fa-spinner fa-spin"></i> Processing  </button>
             </div>
           </form>

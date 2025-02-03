@@ -58,7 +58,7 @@ export default class AuthSigninComponent {
       this.router.navigate([returnUrl]);
     },(error) => {
       this.isFormSubmitted = false;
-      this.errorMessage = error.message;
+      this.errorMessage = "Whoops! Something went wrong or invalid login credentials"; //error.message;
       this.commonService.showError(this.errorMessage);
     });
 

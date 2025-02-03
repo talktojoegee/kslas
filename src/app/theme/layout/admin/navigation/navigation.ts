@@ -88,9 +88,15 @@ const NavigationItems = [
           },
           {
             id: 'property-assessment-value',
-            title: 'Prop. Assess. Value(PAV)',
+            title: 'Billing Setup',
             type: 'item',
             url: '/settings/property-assessment-value'
+          },
+          {
+            id: 'depreciation',
+            title: 'Depreciation',
+            type: 'item',
+            url: '/settings/depreciation'
           }
         ]
       }
@@ -171,6 +177,12 @@ const NavigationItems = [
             url: '/billings/process'
           },
           {
+            id: 'si-return-bills',
+            title: 'Returned Bills',
+            type: 'item',
+            url: '#'
+          },
+          {
             id: 'verify',
             title: 'Verify',
             type: 'item',
@@ -217,6 +229,44 @@ const NavigationItems = [
             url: '/billings/paid'
           },
         ]*/
+      },
+      {
+        id: 'special-interest',
+        title: 'Special Interest Bills',
+        type: 'collapse',
+        icon: 'feather icon-eye',
+        children: [
+          {
+            id: 'si-return-bills',
+            title: 'Returned Bills',
+            type: 'item',
+            url: '/billings/returned-bills'
+          },
+          {
+            id: 'si-verify',
+            title: 'Verify',
+            type: 'item',
+            url: '#'
+          },
+          {
+            id: 'si-authorize',
+            title: 'Authorize',
+            type: 'item',
+            url: '/billings/verify'
+          },
+          {
+            id: 'si-approve',
+            title: 'Approve',
+            type: 'item',
+            url: '/billings/authorize'
+          },
+          {
+            id: 'si-outstanding-bills',
+            title: 'SI Outstanding Bills',
+            type: 'item',
+            url: '/billings/approve'
+          },
+        ]
       }
     ]
   },

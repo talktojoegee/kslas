@@ -82,7 +82,7 @@
             <div class="flex">
              <span class="p-input-icon-left ml-auto">
                 <input
-                  style="padding:5px;"
+                  style="padding:5px; font-size:12px !important;"
                        pInputText
                        type="text"
                        (input)="billTable.filterGlobal($any($event.target).value, 'contains')"
@@ -108,7 +108,7 @@
           <ng-template pTemplate="body" let-rowIndex="rowIndex" let-item>
             <tr style="font-size:14px;">
               <td>{{skip+rowIndex+1}}</td>
-                <td>{{item?.assessmentNo}}</td>
+                <td>{{item?.assessmentNo.toUpperCase()}}</td>
                 <td>{{item?.buildingCode}}</td>
                 <td>{{item?.year}}</td>
                 <td>{{item?.zoneName}}</td>
