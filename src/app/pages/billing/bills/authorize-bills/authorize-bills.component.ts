@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {environment} from "../../../../../environments/environment.development";
 import {ApiService} from "../../../../services/api.service";
 import {MessageService} from "primeng/api";
@@ -18,7 +18,7 @@ import {PaginatorModule} from "primeng/paginator";
   templateUrl: './authorize-bills.component.html',
   styleUrl: './authorize-bills.component.scss'
 })
-export class AuthorizeBillsComponent {
+export class AuthorizeBillsComponent  implements  OnInit{
 
 
 

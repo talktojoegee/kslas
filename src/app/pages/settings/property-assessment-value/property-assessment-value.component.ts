@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {environment} from "../../../../environments/environment.development";
 import {ApiService} from "../../../services/api.service";
@@ -6,21 +6,29 @@ import {MessageService} from "primeng/api";
 import {CommonModule} from "@angular/common";
 import {ToastModule} from "primeng/toast";
 import {MultiSelectModule} from "primeng/multiselect";
+import {PaginatorModule} from "primeng/paginator";
+import {TableModule} from "primeng/table";
+import {Button} from "primeng/button";
+import {IconFieldModule} from "primeng/iconfield";
+import {InputIconModule} from "primeng/inputicon";
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-property-assessment-value',
-  imports: [ReactiveFormsModule, CommonModule, ToastModule, MultiSelectModule, FormsModule],
+  imports: [ReactiveFormsModule, CommonModule, ToastModule, MultiSelectModule, FormsModule,
+    TableModule, Button,
+    IconFieldModule, InputIconModule,PaginatorModule],
   templateUrl: './property-assessment-value.component.html',
   styleUrl: './property-assessment-value.component.scss',
   providers: [MessageService],
 })
-export class PropertyAssessmentValueComponent {
+export class PropertyAssessmentValueComponent implements OnInit{
 
   pavForm!:FormGroup;
   zoneOptions:any = [];
   title: string = "Billing Setup";
   APP_CURRENCY: string = environment.APP_CURRENCY;
+  isLoading: boolean = false;
 
   pavList: any [] = [];
   zoneList: any [] = [];
@@ -29,13 +37,16 @@ export class PropertyAssessmentValueComponent {
   //selectedZones: any [] = [];
   errorBag: {} = {};
   selectedValue: any = null;
+  skip :number =  0;
+  limit:number  = 0;
+  total:number  = 0;
 
   isFormSubmitted: boolean = false;
   formValue: any;
   editForm = this.fb.group({
     pav_code: ["", Validators.required],
-    assessed_amount: ["", Validators.required],
-    value_rate: ["", Validators.required],
+    //assessed_amount: ["", Validators.required],
+    //value_rate: ["", Validators.required],
     ba: ["", Validators.required],
     rr: ["", Validators.required],
     lr: ["", Validators.required],
@@ -54,7 +65,7 @@ export class PropertyAssessmentValueComponent {
 
   ngOnInit():void {
     this.initiateForm();
-    this.loadPAVs();
+    this.loadPAVs({ first: 0, rows: 20 });
     this.loadClasses();
     this.loadZones();
   }
@@ -62,8 +73,8 @@ export class PropertyAssessmentValueComponent {
   initiateForm(){
     this.pavForm = this.fb.group({
       pav_code: ["", Validators.required],
-      assessed_amount: ["", Validators.required],
-      value_rate: ["", Validators.required],
+      //assessed_amount: ["", Validators.required],
+      //value_rate: ["", Validators.required],
       ba: ["", Validators.required],
       rr: ["", Validators.required],
       lr: ["", Validators.required],
@@ -92,7 +103,7 @@ export class PropertyAssessmentValueComponent {
           detail: 'New record added to the system.'
         });
         this.pavForm.reset();
-        this.loadPAVs()
+        this.loadPAVs({ first: 0, rows: 20 })
       },
       error: (error:any) => {
         if (error.status === 400) {
@@ -120,11 +131,11 @@ export class PropertyAssessmentValueComponent {
           summary: 'Action successful',
           detail: 'Changes saved!'
         });
-        this.loadPAVs()
+        this.loadPAVs({ first: 0, rows: 20 })
       },
       error: (error:any) => {
         if (error.status === 400) {
-          this.errorBag = error.error; // Server returns field-level errors
+          this.errorBag = error.error;
         }
         this.isFormSubmitted = false;
       }
@@ -133,9 +144,12 @@ export class PropertyAssessmentValueComponent {
 
   }
 
-  loadPAVs(){
-    this.apiService.get(`property-assessment-value/all`).subscribe((result:any)=>{
+  loadPAVs(event: any){
+    this.skip = event.first || 0;
+    this.limit = event.rows || 0;
+    this.apiService.get(`property-assessment-value/all/${this.limit}/${this.skip}`).subscribe((result:any)=>{
       this.pavList = result.data;
+      this.total = result.total;
     },error => {
       this.errorBag = error.message
       //console.log(this.errorBag)
@@ -169,19 +183,23 @@ export class PropertyAssessmentValueComponent {
   }
 
   launchModal(item){
+    this.zoneOptions = [];
+    this.loadZones();
+    //console.log(this.zoneOptions)
     this.editForm.setValue({
       pav_code:item?.pavCode || '',
-      assessed_amount:item?.assessedAmount || '',
-      value_rate:item?.valueRate || '',
+      //assessed_amount:item?.assessedAmount || '0',
+      //value_rate:item?.valueRate || '',
       ba:item?.ba || '0',
       rr:item?.rr || '0',
       lr:item?.lr || '0',
       br:item?.br || '0',
+      zone:item?.zone?.split(', ') || [],
       class_id:item?.className || '',
-      zone:this.zoneOptions,
       description:item?.occupancy || '',
       id:item?.id
     });
+    //zone:this.zoneOptions,
     this.openModal("editBillingSetup");
   }
 

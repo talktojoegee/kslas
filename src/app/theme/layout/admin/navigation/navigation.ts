@@ -97,6 +97,12 @@ const NavigationItems = [
             title: 'Depreciation',
             type: 'item',
             url: '/settings/depreciation'
+          },
+          {
+            id: 'charge-rate',
+            title: 'Charge Rate',
+            type: 'item',
+            url: '/settings/charge-rate'
           }
         ]
       }
@@ -177,10 +183,10 @@ const NavigationItems = [
             url: '/billings/process'
           },
           {
-            id: 'si-return-bills',
+            id: 'return-bills',
             title: 'Returned Bills',
             type: 'item',
-            url: '#'
+            url: '/billings/returned-bills'
           },
           {
             id: 'verify',
@@ -240,31 +246,31 @@ const NavigationItems = [
             id: 'si-return-bills',
             title: 'Returned Bills',
             type: 'item',
-            url: '/billings/returned-bills'
+            url: '/billings/returned-special-interest-bills'
           },
           {
             id: 'si-verify',
             title: 'Verify',
             type: 'item',
-            url: '#'
+            url: '/billings/special-interest/verify'
           },
           {
             id: 'si-authorize',
             title: 'Authorize',
             type: 'item',
-            url: '/billings/verify'
+            url: '/billings/special-interest/authorize'
           },
           {
             id: 'si-approve',
             title: 'Approve',
             type: 'item',
-            url: '/billings/authorize'
+            url: '/billings/special-interest/approve'
           },
           {
             id: 'si-outstanding-bills',
             title: 'SI Outstanding Bills',
             type: 'item',
-            url: '/billings/approve'
+            url: '/billings/special-interest/outstanding'
           },
         ]
       }

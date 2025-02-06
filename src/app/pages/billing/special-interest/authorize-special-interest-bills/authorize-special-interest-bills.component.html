@@ -1,0 +1,93 @@
+
+
+<div class="row">
+  <div class="col-sm-12 col-lg-12 d-flex justify-content-end">
+    <div class="btn-group">
+      <button (click)="goBack()" type="button" class="btn btn-sm btn-secondary"> <i class="feather icon-skip-back"></i> Go Back</button>
+      <button (click)="goBack()" type="button" class="btn btn-sm btn-info"> <i class="feather icon-file"></i> Export Record</button>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="row" *ngIf="isLoading">
+  <div class="col-md-12 d-flex justify-content-center">
+    <div class="spinner-grow text-info" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+<div class="row mt-5" *ngIf="!isLoading">
+  <div class="col-sm-12 col-lg-12">
+    <app-card  cardTitle="Authorized Special Interest Bills" [options]="false">
+
+      <div class="table-responsive">
+        <p-table
+          #billTable
+          [value]="billList"
+          [loading]="isLoading"
+          [rows]="limit"
+          [globalFilterFields]="['buildingCode', 'categoryName', 'owner', 'assessmentNo']"
+        >
+          <ng-template pTemplate="caption">
+            <div class="flex">
+             <span class="p-input-icon-left ml-auto">
+                <input
+                  style="padding:5px;"
+                  pInputText
+                  type="text"
+                  (input)="billTable.filterGlobal($any($event.target).value, 'contains')"
+                  placeholder="Search keyword" />
+            </span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr class="text-uppercase">
+              <th scope="col">#</th>
+              <th scope="col">Assessment No.</th>
+              <th pSortableColumn="buildingCode" scope="col">Building Code <p-sortIcon field="buildingCode" /></th>
+              <th pSortableColumn="year" scope="col">Year <p-sortIcon field="year" /></th>
+              <th pSortableColumn="year" scope="col">Billing Code <p-sortIcon field="year" /></th>
+              <th pSortableColumn="zoneName" scope="col">Zone <p-sortIcon field="zoneName" /></th>
+              <th pSortableColumn="categoryName" scope="col">Category<p-sortIcon field="categoryName" /></th>
+              <th pSortableColumn="occupancy" scope="col">Occupancy<p-sortIcon field="occupancy" /></th>
+              <th scope="col">Charge Rate(%)</th>
+              <th scope="col">AVG. Mkt. Value({{ APP_CURRENCY }}/sqm)</th>
+              <th pSortableColumn="billAmount" style="text-align:right;" scope="col">Bill Amount({{ APP_CURRENCY }}) <p-sortIcon field="billAmount" /></th>
+              <th  scope="col">Action</th>
+            </tr>
+
+          </ng-template>
+          <ng-template pTemplate="body" let-rowIndex="rowIndex" let-item>
+            <tr style="font-size:14px;">
+              <td>{{skip+rowIndex+1}}</td>
+              <td>{{item?.assessmentNo.toUpperCase()}}</td>
+              <td>{{item?.buildingCode}}</td>
+              <td>{{item?.year}}</td>
+              <td>{{item?.pavCode}}</td>
+              <td>{{item?.zoneName}}</td>
+              <td>{{item?.categoryName}}</td>
+              <td>{{item?.occupancy}}</td>
+              <td>{{item?.rate}}</td>
+              <td>{{item?.assessValue.toLocaleString()}}</td>
+              <td style="text-align: right;">{{item?.billAmount.toLocaleString()}}</td>
+              <td>
+                <a [routerLink]="['/billings/details', item.url]">View</a>
+
+
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <p-paginator
+          [first]="skip"
+          [rows]="limit"
+          [totalRecords]="total"
+          (onPageChange)="loadBills($event)"
+        />
+      </div>
+
+    </app-card>
+  </div>
+</div>

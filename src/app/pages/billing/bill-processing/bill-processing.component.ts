@@ -162,4 +162,23 @@ export class BillProcessingComponent {
     this.location.back();
   }
 
+  rollbackBill() {
+    this.isFormSubmitted = true;
+    this.apiService.get(`billing/rollback/${this.billingYear}`).subscribe((result:any)=>{
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Action successful',
+        detail: "Bills rolled back!"
+      });
+      this.isFormSubmitted = false;
+    },error => {
+      this.errorBag = error.message
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Whoops!',
+        detail: "Something went wrong."
+      });
+      this.isFormSubmitted = false;
+    })
+  }
 }

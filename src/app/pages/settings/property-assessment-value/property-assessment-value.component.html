@@ -14,46 +14,63 @@
       <div class="card-body">
 
         <div class="table-responsive">
-          <table class="table">
-            <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Billing Code</th>
-              <th scope="col">Class</th>
-              <th scope="col">Zone</th>
-              <th scope="col">Occupancy</th>
-              <th style="text-align: right !important;" scope="col">Amount({{ APP_CURRENCY }} )</th>
-              <th style="text-align: right !important;" scope="col">CR(%)</th>
-              <th style="text-align: right !important;" scope="col">BR</th>
-              <th style="text-align: right !important;" scope="col">LR</th>
-              <th style="text-align: right !important;" scope="col">BA%</th>
-              <th style="text-align: right !important;" scope="col">RR%</th>
-              <th scope="col">Action</th>
-            </tr>
-            </thead>
-            <tbody>
+          <p-table
+            #billTable
+            [value]="pavList"
+            [loading]="isLoading"
+            [rows]="limit"
+            [globalFilterFields]="['className', 'zones', 'occupancy', 'pavCode']"
+          >
+            <ng-template pTemplate="caption">
+              <div class="flex">
+             <span class="p-input-icon-left ml-auto">
+                <input
+                  style="padding:5px; font-size:12px;"
+                  pInputText
+                  type="text"
+                  (input)="billTable.filterGlobal($any($event.target).value, 'contains')"
+                  placeholder="Search keyword" />
+            </span>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr class="text-uppercase">
+                <th scope="col">#</th>
+                <th scope="col">Billing Code</th>
+                <th scope="col">Class</th>
+                <th scope="col">Zone</th>
+                <th scope="col">Property Use</th>
+                <th scope="col">BR</th>
+                <th scope="col">LR</th>
+                <th scope="col">BA(%)</th>
+                <th scope="col">RR(%)</th>
+                <th scope="col">Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowIndex="rowIndex" let-item>
+              <tr style="font-size:14px;">
+                <td>{{skip+rowIndex+1}}</td>
+                <td>{{item?.pavCode.toUpperCase()}}</td>
+                <td>{{item?.className}}</td>
+                <td>{{item?.zones}}</td>
+                <td>{{item?.occupancy}}</td>
+                <td>{{item?.br}}</td>
+                <td>{{item?.lr}}</td>
+                <td>{{item?.ba}}</td>
+                <td>{{item?.rr}}</td>
+                <td>
+                  <a style="cursor:pointer;" (click)="launchModal(item)"    ><i class="feather icon-settings text-muted"></i></a>
 
-            @for(item of pavList; track $index){
-            <tr>
-              <th>{{$index + 1}}</th>
-              <td>{{ item.pavCode }}</td>
-              <td>{{ item.className }}</td>
-              <td>{{ item.zones }}</td>
-              <td>{{ item.occupancy }}</td>
-              <td style="text-align: right !important;">{{ item?.assessedAmount.toLocaleString() }}</td>
-              <td style="text-align: right !important;">{{ item.valueRate }}</td>
-              <td>{{ item.br }}</td>
-              <td>{{ item.lr }}</td>
-              <td>{{ item.ba }}</td>
-              <td>{{ item.rr }}</td>
-              <td>
-                <a style="cursor:pointer;" (click)="launchModal(item)"    ><i class="feather icon-settings text-muted"></i></a>
-              </td>
-            </tr>
-            }
-
-            </tbody>
-          </table>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <p-paginator
+            [first]="skip"
+            [rows]="limit"
+            [totalRecords]="total"
+            (onPageChange)="loadPAVs($event)"
+          />
         </div>
       </div>
     </div>
@@ -81,15 +98,7 @@
 
                 </div>
               </div>
-              <div class="col-md-6">
-                <div class="form-group mb-3">
-                  <label for="assessed_amount"> Assessed Amount<sup class="text-danger">*</sup>:</label>
-                  <input name="assessed_amount"  id="assessed_amount"  formControlName="assessed_amount" type="number" step="0.01" class="form-control" placeholder=" Assessed Amount">
-                  <div *ngIf="pavForm.controls['assessed_amount'].touched && pavForm.controls['assessed_amount'].errors?.['required']" class="text-danger">
-                    Assessed amount is required
-                  </div>
-                </div>
-              </div>
+
 
               <div class="col-md-6">
                 <div class="form-group mb-3">
@@ -128,16 +137,6 @@
                   <div *ngIf="pavForm.controls['br'].touched && pavForm.controls['br'].errors?.['required']" class="text-danger">
                     BR is required
                   </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group mb-3">
-                  <label for="value_rate">Charge Rate<sup class="text-danger">*</sup>:</label>
-                  <input name="value_rate"  id="value_rate"  formControlName="value_rate" type="number" step="0.01" class="form-control" placeholder=" Rate">
-                  <div *ngIf="pavForm.controls['value_rate'].touched && pavForm.controls['value_rate'].errors?.['required']" class="text-danger">
-                    Rate is required
-                  </div>
-                  <!-- Server-side error -->
                 </div>
               </div>
               <div class="col-md-6">
@@ -204,15 +203,7 @@
 
                 </div>
               </div>
-              <div class="col-md-6">
-                <div class="form-group mb-3">
-                  <label for="assessed_amount"> Assessed Amount<sup class="text-danger">*</sup>:</label>
-                  <input name="assessed_amount"  id="assessed_amount"  formControlName="assessed_amount" type="number" step="0.01" class="form-control" placeholder=" Assessed Amount">
-                  <div *ngIf="editForm.controls['assessed_amount'].touched && editForm.controls['assessed_amount'].errors?.['required']" class="text-danger">
-                    Assessed amount is required
-                  </div>
-                </div>
-              </div>
+
 
               <div class="col-md-6">
                 <div class="form-group mb-3">
@@ -253,16 +244,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-6">
-                <div class="form-group mb-3">
-                  <label for="value_rate">Charge Rate<sup class="text-danger">*</sup>:</label>
-                  <input name="value_rate"  id="value_rate"  formControlName="value_rate" type="number" step="0.01" class="form-control" placeholder=" Rate">
-                  <div *ngIf="editForm.controls['value_rate'].touched && editForm.controls['value_rate'].errors?.['required']" class="text-danger">
-                    Rate is required
-                  </div>
-                  <!-- Server-side error -->
-                </div>
-              </div>
+
               <div class="col-md-6">
                 <div class="form-group mb-3">
                   <label for="class_id"> Property Class<sup class="text-danger">*</sup>:</label>
@@ -277,7 +259,7 @@
               <div class="col-md-6">
                 <div class="form-group mb-3">
                   <label for="zone"> Zone<sup class="text-danger">*</sup>:</label>
-                  <p-multiSelect  [options]="zoneOptions" styleClass="w-full md:w-80"  formControlName="zone"  placeholder="Select Zones"></p-multiSelect>
+                  <p-multiSelect id="zone"  [options]="zoneOptions" styleClass="w-full md:w-80"  formControlName="zone"  placeholder="Select Zones"></p-multiSelect>
 
                 </div>
               </div>

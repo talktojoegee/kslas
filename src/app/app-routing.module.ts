@@ -37,6 +37,22 @@ import {ApproveBillsComponent} from "./pages/billing/bills/approve-bills/approve
 import {PropertyDetailComponent} from "./pages/owner-management/property-detail/property-detail.component";
 import {ReturnedBillsComponent} from "./pages/billing/bills/returned-bills/returned-bills.component";
 import {DepreciationComponent} from "./pages/settings/depreciation/depreciation.component";
+import {
+  ReturnedSpecialInterestBillsComponent
+} from "./pages/billing/special-interest/returned-special-interest-bills/returned-special-interest-bills.component";
+import {
+  VerifySpecialInterestBillsComponent
+} from "./pages/billing/special-interest/verify-special-interest-bills/verify-special-interest-bills.component";
+import {
+  AuthorizeSpecialInterestBillsComponent
+} from "./pages/billing/special-interest/authorize-special-interest-bills/authorize-special-interest-bills.component";
+import {
+  ApproveSpecialInterestBillsComponent
+} from "./pages/billing/special-interest/approve-special-interest-bills/approve-special-interest-bills.component";
+import {
+  OutstandingSpecialInterestBillsComponent
+} from "./pages/billing/special-interest/outstanding-special-interest-bills/outstanding-special-interest-bills.component";
+import {ChargeRateComponent} from "./pages/settings/charge-rate/charge-rate.component";
 //import {ObjectedBillsComponent} from "./pages/billing/objected-bills/objected-bills.component";
 
 const routes: Routes = [
@@ -129,6 +145,11 @@ const routes: Routes = [
             component: DepreciationComponent,
             canActivate:[AuthGuard],
           },
+          {
+            path: 'charge-rate',
+            component: ChargeRateComponent,
+            canActivate:[AuthGuard],
+          },
         ],
       },
       {
@@ -194,6 +215,31 @@ const routes: Routes = [
           {
             path: "returned-bills",
             component: ReturnedBillsComponent,
+            canActivate:[AuthGuard],
+          },
+          {
+            path: "returned-special-interest-bills",
+            component: ReturnedSpecialInterestBillsComponent,
+            canActivate:[AuthGuard],
+          },
+          {
+            path: "special-interest/verify",
+            component: VerifySpecialInterestBillsComponent,
+            canActivate:[AuthGuard],
+          },
+          {
+            path: "special-interest/authorize",
+            component: AuthorizeSpecialInterestBillsComponent,
+            canActivate:[AuthGuard],
+          },
+          {
+            path: "special-interest/approve",
+            component: ApproveSpecialInterestBillsComponent,
+            canActivate:[AuthGuard],
+          },
+          {
+            path: "special-interest/outstanding",
+            component: OutstandingSpecialInterestBillsComponent,
             canActivate:[AuthGuard],
           },
           {

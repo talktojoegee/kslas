@@ -61,7 +61,9 @@ export class BillDetailComponent implements OnInit{
   objection: number = 0;
   year: number = 0;
   lgaName: string = '';
+  returnReason: string = '';
   balance: number = 0;
+  special: number = 0;
   formValue: any;
 
   form:FormGroup = new FormGroup({
@@ -71,6 +73,10 @@ export class BillDetailComponent implements OnInit{
     //action: new FormControl(""),
     billId: new FormControl(""),
     actionedBy: new FormControl(""),
+  });
+
+  returnForm:FormGroup = new FormGroup({
+    reason: new FormControl("", [Validators.required])
   });
 
   constructor(private apiService: ApiService,
@@ -114,9 +120,11 @@ export class BillDetailComponent implements OnInit{
       this.assessmentYear =  res.data.year;
       this.url = res.data.url;
       this.returned = res.data.returned;
+      this.special = res.data.special;
 
       this.propertyClass = res.data.class;
       this.occupancy = res.data.occupancy;
+      this.returnReason = res.data.reason;
 
       this.balance = res.data.balance;
       this.lgaName =  res.data.lgaName;
@@ -202,7 +210,12 @@ export class BillDetailComponent implements OnInit{
         detail: "Bill verified"
       });
       this.closeModal('verify');
-      this.delayAndRedirect('/billings/verify')
+      if(this.special === 0){
+        this.delayAndRedirect('/billings/verify')
+      }else{
+        this.delayAndRedirect('/billings/special-interest/verify')
+      }
+
     },error=>{
       this.messageService.add({
         severity: 'warn',
@@ -218,10 +231,12 @@ export class BillDetailComponent implements OnInit{
   returnBill(){
     let requestId = this.billId;
     const obj = {
+      reason:this.returnForm.get("reason")?.value,
       requestId:requestId,
       action:5,
       actionedBy:this.apiService.getItem('uuid')
-    };
+    }
+
     this.isFormSubmitted = true;
     this.apiService.post(`billing/action-bill`,obj).subscribe((res:any)=>{
       this.isFormSubmitted = false;
@@ -231,7 +246,12 @@ export class BillDetailComponent implements OnInit{
         detail: "Bill returned"
       });
       this.closeModal('return');
-      this.delayAndRedirect('/billings/verify')
+      if(this.special === 0){
+        this.delayAndRedirect('/billings/verify')
+      }else{
+        this.delayAndRedirect('/billings/special-interest/verify')
+      }
+      //this.delayAndRedirect('/billings/verify')
     },error=>{
       this.messageService.add({
         severity: 'warn',
@@ -259,7 +279,12 @@ export class BillDetailComponent implements OnInit{
         detail: "Bill verified"
       });
       this.closeModal('decline');
-      this.delayAndRedirect('/billings/verify')
+      if(this.special === 0){
+        this.delayAndRedirect('/billings/verify')
+      }else{
+        this.delayAndRedirect('/billings/special-interest/verify')
+      }
+      //this.delayAndRedirect('/billings/verify')
     },error=>{
       this.messageService.add({
         severity: 'warn',
@@ -286,7 +311,12 @@ export class BillDetailComponent implements OnInit{
         detail: "Bill authorized"
       });
       this.closeModal('authorize');
-      this.delayAndRedirect('/billings/authorize')
+      if(this.special === 0){
+        this.delayAndRedirect('/billings/authorize')
+      }else{
+        this.delayAndRedirect('/billings/special-interest/authorize')
+      }
+      //this.delayAndRedirect('/billings/authorize')
 
     },error=>{
       this.messageService.add({
@@ -314,7 +344,12 @@ export class BillDetailComponent implements OnInit{
         detail: "Bill approved"
       });
       this.closeModal('approve');
-      this.delayAndRedirect('/billings/approve')
+      if(this.special === 0){
+        this.delayAndRedirect('/billings/approve')
+      }else{
+        this.delayAndRedirect('/billings/special-interest/approve')
+      }
+      //this.delayAndRedirect('/billings/approve')
     },error=>{
       this.messageService.add({
         severity: 'warn',

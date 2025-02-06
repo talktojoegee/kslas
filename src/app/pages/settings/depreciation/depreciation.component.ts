@@ -19,13 +19,14 @@ export class DepreciationComponent implements OnInit{
   title : string = "Depreciation";
   depreciationList: any [] = [];
   errorBag: any[] = [];
+  depValue:number = 0;
 
   isFormSubmitted: boolean = false;
 
   depreciationForm: FormGroup = new FormGroup({
-    ageFrom: new FormControl("", [Validators.required]),
-    ageTo: new FormControl("", [Validators.required]),
+    range: new FormControl("", [Validators.required]),
     depreciationRate: new FormControl("", [Validators.required]),
+    value: new FormControl(""),
   });
   formValue: any;
   constructor(private apiService: ApiService, private messageService: MessageService) {
@@ -48,6 +49,13 @@ export class DepreciationComponent implements OnInit{
 
   submitData() {
     this.isFormSubmitted = true;
+    this.depreciationForm.setValue({
+      value: this.depValue,
+      range:this.depreciationForm.get("range")?.value,
+      //ageTo:this.depreciationForm.get("ageTo")?.value,
+      depreciationRate:this.depreciationForm.get("depreciationRate")?.value,
+    });
+
     this.formValue = this.depreciationForm.value;
     this.apiService.post(`depreciation/new`, this.formValue).subscribe((res:any)=>{
       this.isFormSubmitted = false;
@@ -60,5 +68,9 @@ export class DepreciationComponent implements OnInit{
     },error=>{
       this.isFormSubmitted = false;
     })
+  }
+
+  handleDepreciationValue() {
+    this.depValue = (100 - this.depreciationForm.get("depreciationRate")?.value);
   }
 }

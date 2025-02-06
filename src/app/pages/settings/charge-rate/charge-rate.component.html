@@ -1,0 +1,72 @@
+<div class="row">
+  <div class="col-sm-4 col-md-4">
+    <app-card class="text-uppercase" cardTitle="Add New Charge Rate" [options]="false">
+      <div class="row">
+        <div class="col-md-12">
+          <form [formGroup]="chargeForm">
+            <div class="form-group">
+              <label for="occupancy">Occupancy<sup class="text-danger">*</sup></label>
+              <input name="occupancy"  formControlName="occupancy" autocomplete="off" type="text" id="occupancy" placeholder="Occupancy" class="form-control shadow-none mt-2">
+              @if(chargeForm.controls['occupancy'].touched && chargeForm.controls['occupancy'].errors?.['required']){
+              <div  class=" text-danger text-capitalize">
+                Occupancy is required
+              </div>
+              }
+            </div>
+            <div class="form-group">
+              <label for="rate">Rate <sup class="text-danger">*</sup></label>
+              <input name="rate"  formControlName="rate" autocomplete="off" type="number" min="0" id="rate" placeholder="Enter rate" class="form-control shadow-none mt-2">
+              @if(chargeForm.controls['rate'].touched && chargeForm.controls['rate'].errors?.['required']){
+              <div  class=" text-danger text-capitalize">
+                Rate is required
+              </div>
+              }
+            </div>
+
+            <div class="form-group d-flex justify-content-center">
+              <button (click)="submitData()" [disabled]="chargeForm.invalid " *ngIf="!isFormSubmitted" type="button" class="btn btn-primary btn-square"> <i class="feather icon-check-circle"></i> Submit</button>
+              <button type="button" disabled style="cursor: not-allowed" *ngIf="isFormSubmitted" class="btn btn-primary"><i class="fa fa-spinner fa-spin"></i> Processing  </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </app-card>
+  </div>
+
+
+  <div class="col-sm-8 col-md-8">
+    <app-card class="text-uppercase" cardTitle="Manage Charge rate" [options]="false">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Occupancy</th>
+                <th scope="col">Rate</th>
+                <th scope="col">Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              @for(item of chargeRateList; track $index){
+              <tr>
+                <th>{{$index + 1}}</th>
+                        <td class="text-capitalize">{{ item.occupancy }}</td>
+                        <td class="text-capitalize">{{ item.rate }}</td>
+                        <td>
+                          <button class="btn btn-sm btn-glow btn-info" disabled type="button">No Action</button>
+                        </td>
+                      </tr>
+              }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </app-card>
+  </div>
+  <p-toast></p-toast>
+</div>
+
+

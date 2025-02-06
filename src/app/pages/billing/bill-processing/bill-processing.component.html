@@ -106,7 +106,8 @@
                               </div>
                               <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-danger"> <i class="feather icon-check"></i> Rollback</button>
+                                <button type="button" (click)="rollbackBill()" *ngIf="!isFormSubmitted" class="btn btn-danger"> <i class="feather icon-check"></i> Rollback</button>
+                                <button class="btn btn-secondary " disabled *ngIf="isFormSubmitted">Processing...</button>
                               </div>
                             </div>
                           </div>

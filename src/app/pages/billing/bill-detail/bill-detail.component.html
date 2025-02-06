@@ -47,6 +47,7 @@
                 <p>{{ownerName}} ({{buildingCode}})<br> {{contactAddress}}<br> {{phoneNo}}</p>
               </div>
               <div class="col-lg-3 pe-0">
+                <h6 class="text-end mb-1" *ngIf="special === 1"> <span class="badge bg-danger">Special Interest Bill</span> </h6>
                 <h4 class="fw-bolder text-uppercase text-end mt-4 mb-2">Assessment No.</h4>
                 <h6 class="text-end mb-5 pb-4">#{{assessmentNo}}</h6>
                 <p class="text-end mb-1">Bill Amount</p>
@@ -54,7 +55,17 @@
                 <h6 class="mb-0 mt-3 text-end fw-normal mb-2"><span class="text-secondary">Date :</span> {{entryDate}}</h6>
               </div>
             </div>
+            <div class="row " *ngIf="returnReason">
+              <div class="col-md-12 p-2 " style="background:#f1dde2 !important;">
+                <p><strong>Note:</strong> <br>
+                  {{ returnReason }}
+                </p>
+
+              </div>
+            </div>
             <div class="container-fluid mt-5 d-flex justify-content-center w-100">
+
+
 
               <div class="table-responsive w-100">
                 <table class="table table-bordered">
@@ -114,11 +125,11 @@
                     <table class="table">
                       <tbody>
                       <tr>
-                        <td><strong>Assess Value:</strong></td>
+                        <td><strong>AVG. Mkt. Value({{ APP_CURRENCY }}/sqm):</strong></td>
                         <td class="text-end">{{APP_CURRENCY}}{{assessValue.toLocaleString()}}</td>
                       </tr>
                       <tr>
-                        <td><strong>Bill Rate:</strong></td>
+                        <td><strong>Charge Rate:</strong></td>
                         <td class="text-end"> {{chargeRate}}%</td>
                       </tr>
                       <tr>
@@ -445,14 +456,25 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p class="text-wrap text-left">This action cannot be undone. Are you sure you want to <span class="text-dark">return</span> this bill?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <form [formGroup]="returnForm">
+          <p class="text-wrap text-left">This action cannot be undone. Are you sure you want to <span class="text-dark">return</span> this bill?</p>
+          <div class="form-group">
+            <label for="reason">Reason: <sup>*</sup></label>
+            <textarea name="reason" formControlName="reason" style="resize:none;" id="reason" required  placeholder="Type reason for returning bill here..." class="form-control shadow-none"></textarea>
+            <div *ngIf="returnForm.controls['reason'].touched && returnForm.controls['reason'].errors?.['required']" class="text-danger">
+              Reason  is required
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
-        <button type="button" (click)="returnBill()" [disabled]="isFormSubmitted "  class="btn btn-danger"> <i class="feather icon-check"></i> Return Bill</button>
-        <button class="btn btn-secondary btn-lg btn-block " disabled *ngIf="isFormSubmitted">Processing...</button>
+            <button type="button" (click)="returnBill()" [disabled]="isFormSubmitted "  class="btn btn-danger"> <i class="feather icon-check"></i> Return Bill</button>
+            <button class="btn btn-secondary btn-lg btn-block " disabled *ngIf="isFormSubmitted">Processing...</button>
+          </div>
+        </form>
+
       </div>
+
     </div>
   </div>
 </div>
@@ -526,6 +548,7 @@
         <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+
         <form [formGroup]="form">
           <div class="form-group">
             <label for="lucAmount">LUC Amount <sup class="text-danger">*</sup> </label>
