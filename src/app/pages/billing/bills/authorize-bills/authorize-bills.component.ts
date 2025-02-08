@@ -10,11 +10,12 @@ import {Button} from "primeng/button";
 import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
 import {PaginatorModule} from "primeng/paginator";
+import {ToastModule} from "primeng/toast";
 
 @Component({
   selector: 'app-authorize-bills',
   imports: [RouterLink, CommonModule, CardComponent, TableModule, Button,
-    IconFieldModule, InputIconModule, PaginatorModule],
+    IconFieldModule, InputIconModule,ToastModule, PaginatorModule],
   templateUrl: './authorize-bills.component.html',
   styleUrl: './authorize-bills.component.scss'
 })
@@ -38,6 +39,7 @@ export class AuthorizeBillsComponent  implements  OnInit{
   limit: number = 20;
   billingYear:number = new Date().getFullYear();
   searchValue: string | undefined;
+  selectedBills: any[] = [];
   constructor(private apiService: ApiService,
               private messageService: MessageService,
               private location: Location) {}
@@ -71,6 +73,53 @@ export class AuthorizeBillsComponent  implements  OnInit{
 
   goBack(): void {
     this.location.back();
+  }
+
+  onSelectChange(event:Event){
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    this.limit = Number(selectedValue);
+    this.loadBills({ first: 0, rows: this.limit })
+  }
+
+  toggleAll(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      this.selectedBills = [...this.billList]; // Select all
+    } else {
+      this.selectedBills = []; // Deselect all
+    }
+  }
+
+  toggleSelection(item: any, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      this.selectedBills.push(item);
+    } else {
+      this.selectedBills = this.selectedBills.filter(bill => bill !== item);
+    }
+  }
+
+  getSelectedBillIds(): number[] {
+    return this.selectedBills.map(bill => bill.billId);
+  }
+
+  authorizeAll() {
+    let ids = this.getSelectedBillIds();
+    let url = `billing/bills/bulk-action`;
+    this.apiService.post(url,{ids,action:'authorize'}).subscribe((result:any)=>{
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Great!',
+        detail: "Action successful"
+      });
+      this.isLoading = false;
+      this.loadBills({ first: 0, rows: this.limit })
+
+    },error => {
+      this.errorBag = error.message
+      this.isLoading = false;
+
+    })
   }
 
 

@@ -18,34 +18,10 @@
     </div>
   </div>
 </div>
-<div class="row mt-5" *ngIf="!isLoading">
+<div class="row mt-1" *ngIf="!isLoading">
   <div class="col-sm-12 col-lg-12">
-    <app-card  cardTitle="Approve Bills" [options]="false">
+    <app-card  cardTitle="All Pending Bills" [options]="false">
       <p>Total records <code>{{total.toLocaleString()}}</code></p>
-      <div class="col-md-4">
-        <div class="input-group mb-3" >
-          <span id="basic-addon1" class="input-group-text">Show</span>
-          <select (change)="onSelectChange($event)" name="show" id="show" class="form-control shadow-none col-md-2">
-            <option disabled selected>--Select--</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-            <option value="200">200</option>
-            <option value="500">500</option>
-            <option value="1000">1000</option>
-            <option value="2000">2000</option>
-            <option [value]="total">All Records</option>
-          </select>
-          <span id="basic-addon2" class="input-group-text">Records</span>
-        </div>
-        <p>Showing <span class="text-info">{{limit.toLocaleString()}}</span>  records of <code>{{total.toLocaleString()}}</code></p>
-
-        <div class="btn-group" *ngIf="selectedBills.length > 0">
-          <button (click)="approveAll()" class="btn btn-sm btn-primary"> <i class="feather icon-check"></i> Approve All</button>
-          <button class="btn btn-sm btn-danger"> <i class="feather icon-trash"></i> Decline All</button>
-        </div>
-
-      </div>
 
       <div class="table-responsive">
         <p-table
@@ -53,14 +29,13 @@
           [value]="billList"
           [loading]="isLoading"
           [rows]="limit"
-          [globalFilterFields]="['buildingCode', 'categoryName', 'zoneName', 'owner', 'assessmentNo']"
-          class="table-striped"
+          [globalFilterFields]="['buildingCode', 'categoryName', 'owner', 'assessmentNo']"
         >
           <ng-template pTemplate="caption">
             <div class="flex">
              <span class="p-input-icon-left ml-auto">
                 <input
-                  style="padding:5px;"
+                  style="padding:5px; font-size:12px;"
                   pInputText
                   type="text"
                   (input)="billTable.filterGlobal($any($event.target).value, 'contains')"
@@ -70,12 +45,6 @@
           </ng-template>
           <ng-template pTemplate="header">
             <tr class="text-uppercase">
-              <th scope="col">
-                <input type="checkbox"  class="form-check-input"
-                       [checked]="selectedBills.length === billList.length && billList.length > 0"
-                       (change)="toggleAll($event)"
-                >
-              </th>
               <th scope="col">#</th>
               <th scope="col">Assessment No.</th>
               <th pSortableColumn="buildingCode" scope="col">Building Code <p-sortIcon field="buildingCode" /></th>
@@ -87,18 +56,13 @@
               <th scope="col">Charge Rate(%)</th>
               <th scope="col">Assessed Mkt. Value({{ APP_CURRENCY }})</th>
               <th pSortableColumn="billAmount" style="text-align:right;" scope="col">LUC({{ APP_CURRENCY }}) <p-sortIcon field="billAmount" /></th>
+              <th>Status</th>
+              <th>Type</th>
               <th  scope="col">Action</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-rowIndex="rowIndex" let-item>
             <tr style="font-size:14px;">
-              <td>
-                <input type="checkbox" [id]="rowIndex"
-                       class="form-check-input"
-                       [checked]="selectedBills.includes(item)"
-                       (change)="toggleSelection(item, $event)"
-                >
-              </td>
               <td>{{skip+rowIndex+1}}</td>
               <td>{{item?.assessmentNo.toUpperCase()}}</td>
               <td>{{item?.buildingCode}}</td>
@@ -111,12 +75,19 @@
               <td>{{item?.assessValue.toLocaleString()}}</td>
               <td style="text-align: right;">{{item?.billAmount.toLocaleString()}}</td>
               <td>
-                <a [routerLink]="['/billings/details', item.url]">View</a>
-
+                <span *ngIf="item?.status === 0" class="badge bg-warning">AV</span>
+                <span *ngIf="item?.status === 1" class="badge bg-primary">AT</span>
+                <span *ngIf="item?.status === 2" class="badge bg-success">AA</span>
+              </td>
+              <td>
+                <span *ngIf="item?.special === 0" class="badge bg-primary">Normal</span>
+                <span *ngIf="item?.special === 1" class="badge bg-danger">Special Interest</span>
+              </td>
+              <td>
+                <a [routerLink]="['/billings/details/all-pending-bills', item.url]">View</a>
 
               </td>
             </tr>
-
           </ng-template>
         </p-table>
         <p-paginator
@@ -130,4 +101,3 @@
     </app-card>
   </div>
 </div>
-<p-toast></p-toast>

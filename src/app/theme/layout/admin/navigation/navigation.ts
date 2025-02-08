@@ -183,11 +183,18 @@ const NavigationItems = [
             url: '/billings/process'
           },
           {
+            id: 'all-bills',
+            title: 'All Pending Bills',
+            type: 'item',
+            url: '/billings/all-pending-bills'
+          },
+          {
             id: 'return-bills',
             title: 'Returned Bills',
             type: 'item',
             url: '/billings/returned-bills'
           },
+
           {
             id: 'verify',
             title: 'Verify',

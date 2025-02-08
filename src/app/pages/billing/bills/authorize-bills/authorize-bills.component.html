@@ -21,14 +21,39 @@
 <div class="row mt-5" *ngIf="!isLoading">
   <div class="col-sm-12 col-lg-12">
     <app-card  cardTitle="Authorized Bills" [options]="false">
+      <p>Total records <code>{{total.toLocaleString()}}</code></p>
+      <div class="col-md-4">
+        <div class="input-group mb-3" >
+          <span id="basic-addon1" class="input-group-text">Show</span>
+          <select (change)="onSelectChange($event)" name="show" id="show" class="form-control shadow-none col-md-2">
+            <option disabled selected>--Select--</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="500">500</option>
+            <option value="1000">1000</option>
+            <option value="2000">2000</option>
+            <option [value]="total">All Records</option>
+          </select>
+          <span id="basic-addon2" class="input-group-text">Records</span>
+        </div>
+        <p>Showing <span class="text-info">{{limit.toLocaleString()}}</span>  records of <code>{{total.toLocaleString()}}</code></p>
 
+        <div class="btn-group" *ngIf="selectedBills.length > 0">
+          <button (click)="authorizeAll()" class="btn btn-sm btn-primary"> <i class="feather icon-check"></i> Authorize All</button>
+          <button class="btn btn-sm btn-danger"> <i class="feather icon-trash"></i> Decline All</button>
+        </div>
+
+      </div>
       <div class="table-responsive">
         <p-table
           #billTable
           [value]="billList"
           [loading]="isLoading"
           [rows]="limit"
-          [globalFilterFields]="['buildingCode', 'categoryName', 'owner', 'assessmentNo']"
+          [globalFilterFields]="['buildingCode', 'categoryName','zoneName', 'owner', 'assessmentNo']"
+          class="table-striped"
         >
           <ng-template pTemplate="caption">
             <div class="flex">
@@ -44,6 +69,12 @@
           </ng-template>
           <ng-template pTemplate="header">
             <tr class="text-uppercase">
+              <th scope="col">
+                <input type="checkbox"  class="form-check-input"
+                       [checked]="selectedBills.length === billList.length && billList.length > 0"
+                       (change)="toggleAll($event)"
+                >
+              </th>
               <th scope="col">#</th>
               <th scope="col">Assessment No.</th>
               <th pSortableColumn="buildingCode" scope="col">Building Code <p-sortIcon field="buildingCode" /></th>
@@ -53,14 +84,21 @@
               <th pSortableColumn="categoryName" scope="col">Category<p-sortIcon field="categoryName" /></th>
               <th pSortableColumn="occupancy" scope="col">Occupancy<p-sortIcon field="occupancy" /></th>
               <th scope="col">Charge Rate(%)</th>
-              <th scope="col">AVG. Mkt. Value({{ APP_CURRENCY }}/sqm)</th>
-              <th pSortableColumn="billAmount" style="text-align:right;" scope="col">Bill Amount({{ APP_CURRENCY }}) <p-sortIcon field="billAmount" /></th>
+              <th scope="col">Assessed Mkt. Value({{ APP_CURRENCY }})</th>
+              <th pSortableColumn="billAmount" style="text-align:right;" scope="col">LUC({{ APP_CURRENCY }}) <p-sortIcon field="billAmount" /></th>
               <th  scope="col">Action</th>
             </tr>
 
           </ng-template>
           <ng-template pTemplate="body" let-rowIndex="rowIndex" let-item>
             <tr style="font-size:14px;">
+              <td>
+                <input type="checkbox" [id]="rowIndex"
+                       class="form-check-input"
+                       [checked]="selectedBills.includes(item)"
+                       (change)="toggleSelection(item, $event)"
+                >
+              </td>
               <td>{{skip+rowIndex+1}}</td>
               <td>{{item?.assessmentNo.toUpperCase()}}</td>
               <td>{{item?.buildingCode}}</td>
@@ -91,3 +129,4 @@
     </app-card>
   </div>
 </div>
+<p-toast></p-toast>

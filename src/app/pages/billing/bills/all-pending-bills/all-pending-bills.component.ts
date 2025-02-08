@@ -10,17 +10,15 @@ import {Button} from "primeng/button";
 import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
 import {PaginatorModule} from "primeng/paginator";
-import {ToastModule} from "primeng/toast";
 
 @Component({
-  selector: 'app-verify-bills',
+  selector: 'app-all-pending-bills',
   imports: [RouterLink, CommonModule, CardComponent, TableModule, Button,
-    IconFieldModule, InputIconModule, PaginatorModule, ToastModule],
-  templateUrl: './verify-bills.component.html',
-  styleUrl: './verify-bills.component.scss',
-  providers:[MessageService]
+    IconFieldModule, InputIconModule, PaginatorModule],
+  templateUrl: './all-pending-bills.component.html',
+  styleUrl: './all-pending-bills.component.scss'
 })
-export class VerifyBillsComponent  implements OnInit{
+export class AllPendingBillsComponent implements OnInit {
 
 
 
@@ -36,7 +34,6 @@ export class VerifyBillsComponent  implements OnInit{
   total:number = 0;
   skip: number = 0;
   limit: number = 20;
-  selectedBills: any[] = [];
   billingYear:number = new Date().getFullYear();
   searchValue: string | undefined;
   constructor(private apiService: ApiService,
@@ -54,8 +51,7 @@ export class VerifyBillsComponent  implements OnInit{
     this.isLoading = true;
     this.skip = event.first || 0;
     this.limit = event.rows || 0;
-    const status = 0;
-    let url = `billing/bills/${this.limit}/${this.skip}/${status}`;
+    let url = `billing/all-pending-bills/${this.limit}/${this.skip}`;
     this.apiService.get(url).subscribe((result:any)=>{
       this.billList = result.data;
       this.total = result.total;
@@ -73,50 +69,5 @@ export class VerifyBillsComponent  implements OnInit{
   goBack(): void {
     this.location.back();
   }
-  onSelectChange(event:Event){
-    const selectedValue = (event.target as HTMLSelectElement).value;
-    this.limit = Number(selectedValue);
-    this.loadBills({ first: 0, rows: this.limit })
-  }
 
-  toggleAll(event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    if (checked) {
-      this.selectedBills = [...this.billList]; // Select all
-    } else {
-      this.selectedBills = []; // Deselect all
-    }
-  }
-
-  toggleSelection(item: any, event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    if (checked) {
-      this.selectedBills.push(item);
-    } else {
-      this.selectedBills = this.selectedBills.filter(bill => bill !== item);
-    }
-  }
-
-  getSelectedBillIds(): number[] {
-    return this.selectedBills.map(bill => bill.billId);
-  }
-
-  verifyAll() {
-    let ids = this.getSelectedBillIds();
-    let url = `billing/bills/bulk-action`;
-    this.apiService.post(url,{ids,action:'verify'}).subscribe((result:any)=>{
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Great!',
-        detail: "Action successful"
-      });
-      this.isLoading = false;
-      this.loadBills({ first: 0, rows: this.limit })
-
-    },error => {
-      this.errorBag = error.message
-      this.isLoading = false;
-
-    })
-  }
 }

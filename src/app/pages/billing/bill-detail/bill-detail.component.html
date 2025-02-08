@@ -44,13 +44,15 @@
                 <h5 class="bill-heading-five">PHONE: 08083427276</h5>
 
                 <h5 class="mt-5 mb-2 text-secondary">Billed to :</h5>
-                <p>{{ownerName}} ({{buildingCode}})<br> {{contactAddress}}<br> {{phoneNo}}</p>
+                <p>{{ownerName}} <br>
+                  <strong>{{contactAddress}}</strong><br>
+                  <strong>{{phoneNo}}</strong></p>
               </div>
               <div class="col-lg-3 pe-0">
                 <h6 class="text-end mb-1" *ngIf="special === 1"> <span class="badge bg-danger">Special Interest Bill</span> </h6>
                 <h4 class="fw-bolder text-uppercase text-end mt-4 mb-2">Assessment No.</h4>
-                <h6 class="text-end mb-5 pb-4">#{{assessmentNo}}</h6>
-                <p class="text-end mb-1">Bill Amount</p>
+                <h5 class="text-end mb-5 pb-4">#{{assessmentNo.toUpperCase()}}</h5>
+                <p class="text-end mb-1">Land Use Charge</p>
                 <h4 class="text-end fw-normal">{{APP_CURRENCY}} {{ billAmount.toLocaleString()  }}</h4>
                 <h6 class="mb-0 mt-3 text-end fw-normal mb-2"><span class="text-secondary">Date :</span> {{entryDate}}</h6>
               </div>
@@ -73,12 +75,12 @@
                   <tr>
                     <th>#</th>
                     <th>Building Code</th>
-                    <th class="text-end">Billing Code</th>
-                    <th class="text-end">LGA</th>
-                    <th class="text-end">Zone</th>
-                    <th class="text-end">Class</th>
-                    <th class="text-end">Occupancy</th>
-                    <th class="text-end">Year</th>
+                    <th class="text-center">Billing Code</th>
+                    <th class="text-center">LGA</th>
+                    <th class="text-center">Zone</th>
+                    <th class="text-center">Property Category</th>
+                    <th class="text-center">Property Address</th>
+                    <th class="text-center">Year</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -89,7 +91,7 @@
                     <td>{{lgaName}}</td>
                     <td>{{ zone }}</td>
                     <td>{{ propertyClass }}</td>
-                    <td>{{ occupancy }}</td>
+                    <td>{{ propertyAddress }}</td>
                     <td>{{ year }}</td>
                   </tr>
                   </tbody>
@@ -125,7 +127,7 @@
                     <table class="table">
                       <tbody>
                       <tr>
-                        <td><strong>AVG. Mkt. Value({{ APP_CURRENCY }}/sqm):</strong></td>
+                        <td><strong>Assessed Mkt. Value({{ APP_CURRENCY }}):</strong></td>
                         <td class="text-end">{{APP_CURRENCY}}{{assessValue.toLocaleString()}}</td>
                       </tr>
                       <tr>
@@ -133,7 +135,7 @@
                         <td class="text-end"> {{chargeRate}}%</td>
                       </tr>
                       <tr>
-                        <td><strong>Bill Amount:</strong></td>
+                        <td><strong>Land Use Charge:</strong></td>
                         <td class="text-end">{{APP_CURRENCY}}{{billAmount.toLocaleString()}}</td>
                       </tr>
 

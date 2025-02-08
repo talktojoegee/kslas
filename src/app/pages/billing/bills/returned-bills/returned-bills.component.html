@@ -21,7 +21,7 @@
 <div class="row mt-5" *ngIf="!isLoading">
   <div class="col-sm-12 col-lg-12">
     <app-card  cardTitle="Returned Bills" [options]="false">
-
+      <p>Total records <code>{{total.toLocaleString()}}</code></p>
       <div class="table-responsive">
         <p-table
           #billTable
@@ -53,8 +53,8 @@
               <th pSortableColumn="categoryName" scope="col">Category<p-sortIcon field="categoryName" /></th>
               <th pSortableColumn="occupancy" scope="col">Occupancy<p-sortIcon field="occupancy" /></th>
               <th scope="col">Charge Rate(%)</th>
-              <th scope="col">AVG. Mkt. Value({{ APP_CURRENCY }}/sqm)</th>
-              <th pSortableColumn="billAmount" style="text-align:right;" scope="col">Bill Amount({{ APP_CURRENCY }}) <p-sortIcon field="billAmount" /></th>
+              <th scope="col">Assessed Mkt. Value({{ APP_CURRENCY }})</th>
+              <th pSortableColumn="billAmount" style="text-align:right;" scope="col">LUC({{ APP_CURRENCY }}) <p-sortIcon field="billAmount" /></th>
               <th  scope="col">Action</th>
             </tr>
           </ng-template>

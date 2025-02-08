@@ -53,6 +53,10 @@ import {
   OutstandingSpecialInterestBillsComponent
 } from "./pages/billing/special-interest/outstanding-special-interest-bills/outstanding-special-interest-bills.component";
 import {ChargeRateComponent} from "./pages/settings/charge-rate/charge-rate.component";
+import {AllPendingBillsComponent} from "./pages/billing/bills/all-pending-bills/all-pending-bills.component";
+import {
+  AllPendingBillDetailsComponent
+} from "./pages/billing/bills/all-pending-bill-details/all-pending-bill-details.component";
 //import {ObjectedBillsComponent} from "./pages/billing/objected-bills/objected-bills.component";
 
 const routes: Routes = [
@@ -201,6 +205,11 @@ const routes: Routes = [
             component: BillDetailComponent,
             canActivate:[AuthGuard],
           },
+          {
+            path: "details/all-pending-bills/:url",
+            component: AllPendingBillDetailsComponent,
+            canActivate:[AuthGuard],
+          },
 
           {
             path: "make-payment/:url",
@@ -215,6 +224,11 @@ const routes: Routes = [
           {
             path: "returned-bills",
             component: ReturnedBillsComponent,
+            canActivate:[AuthGuard],
+          },
+          {
+            path: "all-pending-bills",
+            component: AllPendingBillsComponent,
             canActivate:[AuthGuard],
           },
           {

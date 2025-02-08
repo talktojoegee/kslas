@@ -10,10 +10,11 @@ import {Button} from "primeng/button";
 import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
 import {PaginatorModule} from "primeng/paginator";
+import {ToastModule} from "primeng/toast";
 
 @Component({
   selector: 'app-approve-bills',
-  imports: [RouterLink, CommonModule, CardComponent, TableModule, Button,
+  imports: [RouterLink, CommonModule, ToastModule, CardComponent, TableModule, Button,
     IconFieldModule, InputIconModule, PaginatorModule],
   templateUrl: './approve-bills.component.html',
   styleUrl: './approve-bills.component.scss'
@@ -40,6 +41,7 @@ export class ApproveBillsComponent implements OnInit{
   limit: number = 20;
   billingYear:number = new Date().getFullYear();
   searchValue: string | undefined;
+  selectedBills: any[] = [];
   constructor(private apiService: ApiService,
               private messageService: MessageService,
               private location: Location) {}
@@ -73,6 +75,54 @@ export class ApproveBillsComponent implements OnInit{
 
   goBack(): void {
     this.location.back();
+  }
+
+
+  onSelectChange(event:Event){
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    this.limit = Number(selectedValue);
+    this.loadBills({ first: 0, rows: this.limit })
+  }
+
+  toggleAll(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      this.selectedBills = [...this.billList]; // Select all
+    } else {
+      this.selectedBills = []; // Deselect all
+    }
+  }
+
+  toggleSelection(item: any, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      this.selectedBills.push(item);
+    } else {
+      this.selectedBills = this.selectedBills.filter(bill => bill !== item);
+    }
+  }
+
+  getSelectedBillIds(): number[] {
+    return this.selectedBills.map(bill => bill.billId);
+  }
+
+  approveAll() {
+    let ids = this.getSelectedBillIds();
+    let url = `billing/bills/bulk-action`;
+    this.apiService.post(url,{ids,action:'approve'}).subscribe((result:any)=>{
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Great!',
+        detail: "Action successful"
+      });
+      this.isLoading = false;
+      this.loadBills({ first: 0, rows: this.limit })
+
+    },error => {
+      this.errorBag = error.message
+      this.isLoading = false;
+
+    })
   }
 
 

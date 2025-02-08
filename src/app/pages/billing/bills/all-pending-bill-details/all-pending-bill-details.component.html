@@ -1,0 +1,217 @@
+<div class="row mb-3">
+  <div class="col-sm-12 col-lg-12 d-flex justify-content-end">
+    <div class="btn-group">
+      @if(special === 0){
+      <button   data-bs-toggle="modal" data-bs-target="#verify" type="button" class="btn btn-danger"> <i class="feather icon-check"></i> Make Special Interest</button>
+      }
+      @if(special === 1){
+      <button   data-bs-toggle="modal" data-bs-target="#authorize" type="button" class="btn btn-primary"> <i class="feather icon-check"></i> Make Normal Bill</button>
+      }
+
+      <button (click)="goBack()" type="button" class="btn btn-secondary"> <i class="feather icon-skip-back"></i> Go Back</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-md-12 col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="container-fluid d-flex justify-content-between">
+              <div class="col-lg-3 ps-0">
+                <p class="mt-1 mb-1">
+                  <img src="assets/images/kgirs.png" height="82" width="82" alt="KGIRS">
+                </p>
+                <h4 class="bill-heading-two">
+                  KOGI STATE GOVERNMENT
+                </h4>
+                <h3 class="bill-heading-three">CENTRAL BILLING SYSTEM</h3>
+                <h4 class="bill-heading-four">NO. 1 BEACH ROAD, LOKOJA, KOGI STATE, NIGERIA.</h4>
+                <h5 class="bill-heading-five">PHONE: 08083427276</h5>
+
+                <h5 class="mt-5 mb-2 text-secondary">Billed to :</h5>
+                <p>{{ownerName}} <br>
+                  <strong>{{contactAddress}}</strong><br>
+                  <strong>{{phoneNo}}</strong></p>
+              </div>
+              <div class="col-lg-3 pe-0">
+                <h6 class="text-end mb-1" *ngIf="special === 1"> <span class="badge bg-danger">Special Interest Bill</span> </h6>
+                <h4 class="fw-bolder text-uppercase text-end mt-4 mb-2">Assessment No.</h4>
+                <h5 class="text-end mb-5 pb-4">#{{assessmentNo.toUpperCase()}}</h5>
+                <p class="text-end mb-1">Land Use Charge</p>
+                <h4 class="text-end fw-normal">{{APP_CURRENCY}} {{ billAmount.toLocaleString()  }}</h4>
+                <h6 class="mb-0 mt-3 text-end fw-normal mb-2"><span class="text-secondary">Date :</span> {{entryDate}}</h6>
+              </div>
+            </div>
+            <div class="row " *ngIf="returnReason">
+              <div class="col-md-12 p-2 " style="background:#f1dde2 !important;">
+                <p><strong>Note:</strong> <br>
+                  {{ returnReason }}
+                </p>
+
+              </div>
+            </div>
+            <div class="container-fluid mt-5 d-flex justify-content-center w-100">
+
+
+
+              <div class="table-responsive w-100">
+                <table class="table table-bordered">
+                  <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Building Code</th>
+                    <th class="text-center">Billing Code</th>
+                    <th class="text-center">LGA</th>
+                    <th class="text-center">Zone</th>
+                    <th class="text-center">Property Category</th>
+                    <th class="text-center">Property Address</th>
+                    <th class="text-center">Year</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr class="">
+                    <td class="text-start">1</td>
+                    <td class="text-start">{{buildingCode}}</td>
+                    <td>{{pavCode}}</td>
+                    <td>{{lgaName}}</td>
+                    <td>{{ zone }}</td>
+                    <td>{{ propertyClass }}</td>
+                    <td>{{ propertyAddress }}</td>
+                    <td>{{ year }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="container-fluid mt-5 w-100">
+              <div class="row">
+                <div class="col-md-6 ms-auto">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tbody>
+                      <tr>
+                        <td><strong>Billed By:</strong></td>
+                        <td class="text-end"> {{billedBy}}</td>
+                      </tr>
+                      @if(statusInt === 3){
+                      <tr>
+                        <td><strong>Objections?:</strong></td>
+                        <td class="text-end">
+                          <span *ngIf="objection == 0" class="text-success">No</span>
+                          <span *ngIf="objection == 1" class="text-danger">Yes</span>
+                        </td>
+                      </tr>
+                      }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="col-md-6 ms-auto">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tbody>
+                      <tr>
+                        <td><strong>Assessed Mkt. Value({{ APP_CURRENCY }}):</strong></td>
+                        <td class="text-end">{{APP_CURRENCY}}{{assessValue.toLocaleString()}}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Charge Rate:</strong></td>
+                        <td class="text-end"> {{chargeRate}}%</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Land Use Charge:</strong></td>
+                        <td class="text-end">{{APP_CURRENCY}}{{billAmount.toLocaleString()}}</td>
+                      </tr>
+
+                      @if(statusInt === 3){
+                      <tr>
+                        <td><strong>Amount Paid:</strong></td>
+                        <td class="text-end">{{APP_CURRENCY}}{{paidAmount.toLocaleString()}}</td>
+                      </tr>
+                      <!-- <tr class="bg-light">
+                        <td class="text-bold-800"><strong>Outstanding:</strong></td>
+                        <td class="text-bold-800 text-end"></td>
+                      </tr> -->
+                      <tr class="bg-light">
+                        <td class="text-bold-800"><strong>Balance Due:</strong></td>
+                        <td class="text-bold-800 text-end">{{APP_CURRENCY}}{{balance}}</td>
+                      </tr>
+                      }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            @if(statusInt === 3){
+            <div class="container-fluid w-100">
+              @if(paid !== 1){
+            <a [routerLink]="['/billings/make-payment', url]" class="btn btn-primary float-end mt-4 ms-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send me-3 icon-md">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>Make Payment
+            </a>
+            }
+            <button type="button" (click)="exportToPDF(assessmentNo)" class="btn btn-outline-primary float-end mt-4">
+             <i class="feather icon-download"></i> Download Bill
+            </button>
+
+          </div>
+            }
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-toast></p-toast>
+
+<div class="modal fade" id="verify" tabindex="-1"  aria-labelledby="verify" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success">
+        <h5 class="modal-title text-uppercase text-white" id="exampleModalLabel">Make Bill of Special Interest</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-wrap text-left">Are you sure you want to make this bill of<span class="text-success"> special interest?</span> </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+        <button type="button" (click)="toggleBillToSpecial()" [disabled]="isFormSubmitted "  class="btn btn-success"> <i class="feather icon-check"></i> Make Special</button>
+        <button class="btn btn-secondary btn-lg btn-block " disabled *ngIf="isFormSubmitted">Processing...</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="authorize" tabindex="-1"  aria-labelledby="authorize" aria-hidden="true">
+  <div class="modal-dialog ">
+    <div class="modal-content">
+      <div class="modal-header bg-success">
+        <h5 class="modal-title text-uppercase text-white" id="authorizeModalLabel">Normalize Bill</h5>
+        <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-wrap text-left">Are you sure you want to <span class="text-success">normalize</span> this bill?</p>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" (click)="toggleBillToNormal()" [disabled]="isFormSubmitted "  class="btn btn-success"> <i class="feather icon-check"></i> Normalize Bill</button>
+          <button class="btn btn-secondary btn-lg btn-block " disabled *ngIf="isFormSubmitted">Processing...</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
