@@ -1,0 +1,70 @@
+<div class="row">
+  <div class="col-sm-4 col-md-4">
+    <app-card class="" cardTitle="Assign Permissions" [options]="false">
+      <div class="row">
+        <div class="col-md-12">
+          <form [formGroup]="form">
+            <div class="form-group">
+              <label for="role"> Role <sup class="text-danger">*</sup></label>
+              <select name="role" formControlName="role" id="role" class="form-control">
+                <option disabled selected>-- Choose Role --</option>
+                @for(item of roleList; track $index){
+                <option value="{{item?.id}}">{{item?.name}}</option>
+                }
+              </select>
+              <div *ngIf="form.controls['role'].touched && form.controls['role'].errors?.['required']" class="text-danger">
+                Role  is required
+              </div>
+            </div>
+
+            <div class="form-group col-md-12">
+              <label for="">Permission: <sup class='text-danger'>*</sup>  </label>
+              <div class="card flex justify-content-center ">
+                <p-multiSelect
+                  [options]="permissionList"
+                  formControlName="permissions"
+                  placeholder="Select permission(s)"
+                  optionLabel="name"
+                  [showClear]="true" />
+              </div>
+
+
+            </div>
+
+            <div class="form-group d-flex justify-content-center">
+              <button (click)="onSaveRecord()" [disabled]="form.invalid " *ngIf="!isFormSubmitted" type="button" class="btn btn-primary btn-square"> <i class="feather icon-check-circle"></i> Submit</button>
+              <button type="button" disabled style="cursor: not-allowed" *ngIf="isFormSubmitted" class="btn btn-primary"><i class="fa fa-spinner fa-spin"></i> Processing  </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </app-card>
+  </div>
+
+
+  <div class="col-sm-8 col-md-8">
+    <app-card class="" cardTitle="Manage Assignment" [options]="false">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Role</th>
+                <th scope="col">Action</th>
+              </tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </app-card>
+  </div>
+  <p-toast></p-toast>
+</div>
+
+

@@ -11,6 +11,8 @@ import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
 import {PaginatorModule} from "primeng/paginator";
 import {ToastModule} from "primeng/toast";
+import {Roles} from "../../../../types";
+import {RbacService} from "../../../../services/rbac.service";
 
 @Component({
   selector: 'app-verify-bills',
@@ -41,6 +43,7 @@ export class VerifyBillsComponent  implements OnInit{
   searchValue: string | undefined;
   constructor(private apiService: ApiService,
               private messageService: MessageService,
+              private rbacService: RbacService,
               private location: Location) {}
 
 
@@ -48,6 +51,24 @@ export class VerifyBillsComponent  implements OnInit{
   ngOnInit() {
 
     this.loadBills({ first: 0, rows: 20 });
+
+    /*if (this.rbacService.isGranted(Roles.ADMINISTRATOR)) {
+      console.log('Access granted for administrator!');
+    } else {
+      console.log('Access denied for administrator!');
+    }
+
+    if (this.rbacService.isGranted(Roles.STAFF)) {
+      console.log('Access granted for staff!');
+    } else {
+      console.log('Access denied for staff!');
+    }
+
+    if (this.rbacService.isGranted(Roles.USER)) {
+      console.log('Access granted for user!');
+    } else {
+      console.log('Access denied for user!');
+    }*/
   }
 
   loadBills(event: any) {
@@ -117,6 +138,23 @@ export class VerifyBillsComponent  implements OnInit{
       this.errorBag = error.message
       this.isLoading = false;
 
+    })
+  }
+
+
+  downloadAttachment() {
+    this.apiService.downloadFile(`export-bills`).subscribe((response)=>{
+      this.isFormSubmitted = false;
+      const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'bills.xlsx';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    },error=>{
+
+      this.isFormSubmitted = false;
     })
   }
 }

@@ -57,6 +57,10 @@ import {AllPendingBillsComponent} from "./pages/billing/bills/all-pending-bills/
 import {
   AllPendingBillDetailsComponent
 } from "./pages/billing/bills/all-pending-bill-details/all-pending-bill-details.component";
+import {SystemUsersComponent} from "./pages/settings/system-users/system-users.component";
+import {RolesComponent} from "./pages/settings/roles/roles.component";
+import {PermissionsComponent} from "./pages/settings/permissions/permissions.component";
+import {RolesPermissionsComponent} from "./pages/settings/roles-permissions/roles-permissions.component";
 //import {ObjectedBillsComponent} from "./pages/billing/objected-bills/objected-bills.component";
 
 const routes: Routes = [
@@ -152,6 +156,26 @@ const routes: Routes = [
           {
             path: 'charge-rate',
             component: ChargeRateComponent,
+            canActivate:[AuthGuard],
+          },
+          {
+            path: 'system-users',
+            component: SystemUsersComponent,
+            canActivate:[AuthGuard],
+          },
+          {
+            path: 'roles',
+            component: RolesComponent,
+            canActivate:[AuthGuard],
+          },
+          {
+            path: 'permissions',
+            component: PermissionsComponent,
+            canActivate:[AuthGuard],
+          },
+          {
+            path: 'roles-permissions',
+            component: RolesPermissionsComponent,
             canActivate:[AuthGuard],
           },
         ],

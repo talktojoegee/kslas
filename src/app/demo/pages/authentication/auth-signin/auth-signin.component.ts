@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router,ActivatedRoute, RouterModule} from '@angular/router';
 import {ApiService} from "../../../../services/api.service";
 import {MessageService} from "primeng/api";
@@ -6,6 +6,8 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {ToastModule} from "primeng/toast";
 import {CommonModule} from "@angular/common";
 import {CommonService} from "../../../../services/common.service";
+import  { RbacService } from '../../../../services/rbac.service';
+import { Roles } from '../../../../types';
 
 @Component({
   selector: 'app-auth-signin',
@@ -14,7 +16,7 @@ import {CommonService} from "../../../../services/common.service";
   styleUrls: ['./auth-signin.component.scss'],
   providers: [MessageService]
 })
-export default class AuthSigninComponent {
+export default class AuthSigninComponent implements OnInit{
 
 
   public isFormSubmitted :boolean = false;
@@ -23,7 +25,9 @@ export default class AuthSigninComponent {
   payload: any;
 
 
-  constructor(private apiService: ApiService,
+  constructor(
+              private apiService: ApiService,
+              private rbacService: RbacService,
               private router: Router,
               private route: ActivatedRoute,
               private commonService: CommonService,
@@ -34,6 +38,10 @@ export default class AuthSigninComponent {
     username: new FormControl("", [Validators.required]),
     password: new FormControl("", [Validators.required]),
   });
+
+  ngOnInit() {
+
+  }
 
 
   handleLogin(){
@@ -47,12 +55,47 @@ export default class AuthSigninComponent {
         summary: 'Action successful',
         detail: 'Login successful. Redirecting...'
       });
-      const { token, username, email, name, id } = res.data;
+      const { token, username, email, name, id, permissions, role } = res.data;
       this.apiService.storeToken(token);
       this.apiService.storeUserData("username", username);
       this.apiService.storeUserData("email", email);
       this.apiService.storeUserData("name", name);
       this.apiService.storeUserData("uuid", id);
+      this.apiService.storeUserData("role", role);
+      this.apiService.storeUserData("permissions", permissions);
+   /*   this.rbacService.setRoles([
+        {
+          id: 1,
+          name: 'User',
+          uid: 'USER',
+          extends: null
+        },
+        {
+          id: 2,
+          name: 'Staff',
+          uid: 'STAFF',
+          extends: 1
+        },
+        {
+          id: 3,
+          name: 'Administrator',
+          uid: 'ADMINISTRATOR',
+          extends: 2
+        }
+      ]);*/
+
+      /*this.rbacService.setAuthenticatedUser({
+        id: 1,
+        name: name,
+        email: email,
+        username: username,
+        role: {
+          id: id,
+          name: 'USER',
+          uid: 'USER',
+          extends: id
+        }
+      });*/
       this.isFormSubmitted = false;
       const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
       this.router.navigate([returnUrl]);

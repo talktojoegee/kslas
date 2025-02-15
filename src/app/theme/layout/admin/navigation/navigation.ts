@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-
+import {ApiService} from "../../../../services/api.service";
+import {RbacService} from "../../../../services/rbac.service";
+import {ActivatedRoute, Router} from "@angular/router";
+import {CommonService} from "../../../../services/common.service";
+import {MessageService} from "primeng/api";
 export interface NavigationItem {
   id: string;
   title: string;
@@ -50,6 +54,12 @@ const NavigationItems = [
         type: 'collapse',
         icon: 'feather icon-settings',
         children: [
+          {
+            id: 'system-users',
+            title: 'System Users',
+            type: 'item',
+            url: '/settings/system-users'
+          },
           {
             id: 'lga',
             title: 'LGA',
@@ -103,7 +113,26 @@ const NavigationItems = [
             title: 'Charge Rate',
             type: 'item',
             url: '/settings/charge-rate'
-          }
+          },
+          {
+            id: 'roles',
+            title: 'Roles',
+            type: 'item',
+            url: '/settings/roles'
+          },
+          {
+            id: 'permissions',
+            title: 'Permissions',
+            type: 'item',
+            url: '/settings/permissions'
+          },
+          {
+            id: 'assign-permission',
+            title: 'Assign Permissions',
+            type: 'item',
+            url: '/settings/roles-permissions'
+          },
+
         ]
       }
     ]
@@ -136,13 +165,6 @@ const NavigationItems = [
       }
     ]
   },
-/*  {
-    id: 'bills',
-    //title: 'Bills',
-    type: 'group',
-    icon: 'icon-bookmark',
-
-  },*/
   {
     id: 'synchronization',
     title: 'Billing',
@@ -283,86 +305,7 @@ const NavigationItems = [
       }
     ]
   },
-  /*
-  {
-    id: 'billing',
-    title: 'Billing',
-    type: 'group',
-    icon: 'icon-bookmark',
 
-    children: [
-      {
-        id: 'bills-system',
-        title: 'Bills',
-        type: 'collapse',
-        icon: 'feather icon-tag',
-        children: [
-          {
-            id: 'pending-bills',
-            title: 'Pending',
-            type: 'item',
-            url: '/billings/pending'
-          },
-          {
-            id: 'verify',
-            title: 'Verify',
-            type: 'item',
-            url: '/billings/verify'
-          },
-          {
-            id: 'authorize',
-            title: 'Authorize',
-            type: 'item',
-            url: '/billings/authorize'
-          },
-          {
-            id: 'approve',
-            title: 'Approve',
-            type: 'item',
-            url: '/billings/approve'
-          },
-          {
-            id: 'objected',
-            title: 'Objected Bills',
-            type: 'item',
-            url: '/billings/objected'
-          },
-        ]
-      },
-      {
-        id: 'billing-system',
-        title: 'Billing',
-        type: 'collapse',
-        icon: 'feather icon-bookmark',
-        children: [
-          {
-            id: 'synchronization',
-            title: 'Synchronization',
-            type: 'item',
-            url: '/billings/synchronization'
-          },
-          {
-            id: 'process',
-            title: 'Process Bill',
-            type: 'item',
-            url: '/billings/process'
-          },
-          {
-            id: 'outstanding',
-            title: 'Outstanding Bills',
-            type: 'item',
-            url: '/billings/outstanding'
-          },
-          {
-            id: 'paid',
-            title: 'Paid Bills',
-            type: 'item',
-            url: '/billings/paid'
-          },
-        ]
-      }
-    ]
-  },*/
 
   {
     id: 'objection',
@@ -456,163 +399,463 @@ const NavigationItems = [
       }
     ]
   },
-  /*
+
+];
+
+const BillerNavigationItems = [
   {
-    id: 'ui-element',
-    title: 'UI ELEMENT',
+    id: 'navigation',
+    title: 'Navigation',
     type: 'group',
-    icon: 'icon-ui',
+    icon: 'icon-navigation',
     children: [
       {
-        id: 'basic',
-        title: 'Component',
+        id: 'dashboard',
+        title: 'Dashboard',
+        type: 'item',
+        url: '/dashboard',
+        icon: 'feather icon-home',
+        classes: 'nav-item'
+      }
+    ]
+  },
+  {
+    id: 'synchronization',
+    title: 'Billing',
+    type: 'group',
+    icon: 'icon-bookmark',
+
+    children: [
+      {
+        id: 'system-sync',
+        title: 'Sync',
         type: 'collapse',
-        icon: 'feather icon-box',
+        icon: 'feather icon-refresh-ccw',
         children: [
           {
-            id: 'button',
-            title: 'Button',
+            id: 'synchronization',
+            title: 'Synchronization',
             type: 'item',
-            url: '/basic/button'
+            url: '/billings/synchronization'
           },
           {
-            id: 'badges',
-            title: 'Badges',
+            id: 'exception',
+            title: 'Property Exceptions',
             type: 'item',
-            url: '/basic/badges'
+            url: '#'
+          },
+        ]
+      },
+      {
+        id: 'billing-system',
+        title: 'Process Bill',
+        type: 'collapse',
+        icon: 'feather icon-server',
+        children: [
+          {
+            id: 'process',
+            title: 'Process Bill',
+            type: 'item',
+            url: '/billings/process'
           },
           {
-            id: 'breadcrumb-pagination',
-            title: 'Breadcrumb & Pagination',
+            id: 'all-bills',
+            title: 'All Pending Bills',
             type: 'item',
-            url: '/basic/breadcrumb-paging'
+            url: '/billings/all-pending-bills'
           },
           {
-            id: 'collapse',
-            title: 'Collapse',
+            id: 'return-bills',
+            title: 'Returned Bills',
             type: 'item',
-            url: '/basic/collapse'
+            url: '/billings/returned-bills'
+          },
+
+          {
+            id: 'verify',
+            title: 'Verify',
+            type: 'item',
+            url: '/billings/verify'
           },
           {
-            id: 'tabs-pills',
-            title: 'Tabs & Pills',
+            id: 'authorize',
+            title: 'Authorize',
             type: 'item',
-            url: '/basic/tabs-pills'
+            url: '/billings/authorize'
           },
           {
-            id: 'typography',
-            title: 'Typography',
+            id: 'approve',
+            title: 'Approve',
             type: 'item',
-            url: '/basic/typography'
-          }
+            url: '/billings/approve'
+          },
+          {
+            id: 'outstanding',
+            title: 'Outstanding Bills',
+            type: 'item',
+            url: '/billings/outstanding'
+          },
+          {
+            id: 'paid',
+            title: 'Paid Bills',
+            type: 'item',
+            url: '/billings/paid'
+          },
+        ]
+
+        /*children: [
+
+          {
+            id: 'outstanding',
+            title: 'Outstanding Bills',
+            type: 'item',
+            url: '/billings/outstanding'
+          },
+          {
+            id: 'paid',
+            title: 'Paid Bills',
+            type: 'item',
+            url: '/billings/paid'
+          },
+        ]*/
+      },
+      {
+        id: 'special-interest',
+        title: 'Special Interest Bills',
+        type: 'collapse',
+        icon: 'feather icon-eye',
+        children: [
+          {
+            id: 'si-return-bills',
+            title: 'Returned Bills',
+            type: 'item',
+            url: '/billings/returned-special-interest-bills'
+          },
+          {
+            id: 'si-verify',
+            title: 'Verify',
+            type: 'item',
+            url: '/billings/special-interest/verify'
+          },
+          {
+            id: 'si-authorize',
+            title: 'Authorize',
+            type: 'item',
+            url: '/billings/special-interest/authorize'
+          },
+          {
+            id: 'si-approve',
+            title: 'Approve',
+            type: 'item',
+            url: '/billings/special-interest/approve'
+          },
+          {
+            id: 'si-outstanding-bills',
+            title: 'SI Outstanding Bills',
+            type: 'item',
+            url: '/billings/special-interest/outstanding'
+          },
         ]
       }
     ]
   },
- /* {
-    id: 'forms',
-    title: 'Forms & Tables',
-    type: 'group',
-    icon: 'icon-group',
-    children: [
-      {
-        id: 'forms-element',
-        title: 'Form Elements',
-        type: 'item',
-        url: '/forms/basic',
-        classes: 'nav-item',
-        icon: 'feather icon-file-text'
-      },
-      {
-        id: 'tables',
-        title: 'Tables',
-        type: 'item',
-        url: '/tables/bootstrap',
-        classes: 'nav-item',
-        icon: 'feather icon-server'
-      }
-    ]
-  },
+
   {
-    id: 'chart-maps',
-    title: 'Chart',
+    id: 'objection',
+    title: 'Objection',
     type: 'group',
-    icon: 'icon-charts',
+    icon: 'icon-bookmark',
     children: [
       {
-        id: 'apexChart',
-        title: 'ApexChart',
-        type: 'item',
-        url: 'apexchart',
-        classes: 'nav-item',
-        icon: 'feather icon-pie-chart'
-      }
-    ]
-  },
-  {
-    id: 'pages',
-    title: 'Pages',
-    type: 'group',
-    icon: 'icon-pages',
-    children: [
-      {
-        id: 'auth',
-        title: 'Authentication',
+        id: 'objection-system',
+        title: 'Objection',
         type: 'collapse',
-        icon: 'feather icon-lock',
+        icon: 'feather icon-help-circle',
         children: [
           {
-            id: 'signup',
-            title: 'Sign up',
+            id: 'requests',
+            title: 'Requests',
             type: 'item',
-            url: '/auth/signup',
-            target: true,
-            breadcrumbs: false
+            url: '/objections/requests'
           },
           {
-            id: 'signin',
-            title: 'Sign in',
+            id: 'verification',
+            title: 'Verification',
             type: 'item',
-            url: '/auth/signin',
-            target: true,
-            breadcrumbs: false
-          }
+            url: '/objections/verification'
+          },
+          {
+            id: 'authorization',
+            title: 'Authorization',
+            type: 'item',
+            url: '/objections/authorization'
+          },
+          {
+            id: 'approval',
+            title: 'Approval',
+            type: 'item',
+            url: '/objections/approval'
+          },
+          {
+            id: 'objected',
+            title: 'Objected Bills',
+            type: 'item',
+            url: '/billings/objected'
+          },
+        ]
+      }
+    ]
+  },
+
+
+];
+
+const UserNavigationItems = [
+
+  {
+    id: 'owner-management',
+    title: 'Management',
+    type: 'group',
+    icon: 'icon-users',
+    children: [
+      {
+        id: 'property-management',
+        title: 'Property Management',
+        type: 'collapse',
+        icon: 'feather icon-users',
+        children: [
+          {
+            id: 'owners',
+            title: 'Owners',
+            type: 'item',
+            url: '/owner-management/owners'
+          },
+          {
+            id: 'property-list',
+            title: 'Property List',
+            type: 'item',
+            url: '/owner-management/property-list'
+          },
+        ]
+      }
+    ]
+  },
+  {
+    id: 'synchronization',
+    title: 'Billing',
+    type: 'group',
+    icon: 'icon-bookmark',
+
+    children: [
+      {
+        id: 'system-sync',
+        title: 'Sync',
+        type: 'collapse',
+        icon: 'feather icon-refresh-ccw',
+        children: [
+          {
+            id: 'synchronization',
+            title: 'Synchronization',
+            type: 'item',
+            url: '/billings/synchronization'
+          },
+          {
+            id: 'exception',
+            title: 'Property Exceptions',
+            type: 'item',
+            url: '#'
+          },
         ]
       },
       {
-        id: 'sample-page',
-        title: 'Sample Page',
-        type: 'item',
-        url: '/sample-page',
-        classes: 'nav-item',
-        icon: 'feather icon-sidebar'
+        id: 'billing-system',
+        title: 'Process Bill',
+        type: 'collapse',
+        icon: 'feather icon-server',
+        children: [
+          {
+            id: 'process',
+            title: 'Process Bill',
+            type: 'item',
+            url: '/billings/process'
+          },
+          {
+            id: 'all-bills',
+            title: 'All Pending Bills',
+            type: 'item',
+            url: '/billings/all-pending-bills'
+          },
+          {
+            id: 'return-bills',
+            title: 'Returned Bills',
+            type: 'item',
+            url: '/billings/returned-bills'
+          },
+
+          {
+            id: 'verify',
+            title: 'Verify',
+            type: 'item',
+            url: '/billings/verify'
+          },
+          {
+            id: 'authorize',
+            title: 'Authorize',
+            type: 'item',
+            url: '/billings/authorize'
+          },
+          {
+            id: 'approve',
+            title: 'Approve',
+            type: 'item',
+            url: '/billings/approve'
+          },
+          {
+            id: 'outstanding',
+            title: 'Outstanding Bills',
+            type: 'item',
+            url: '/billings/outstanding'
+          },
+          {
+            id: 'paid',
+            title: 'Paid Bills',
+            type: 'item',
+            url: '/billings/paid'
+          },
+        ]
+
+        /*children: [
+
+          {
+            id: 'outstanding',
+            title: 'Outstanding Bills',
+            type: 'item',
+            url: '/billings/outstanding'
+          },
+          {
+            id: 'paid',
+            title: 'Paid Bills',
+            type: 'item',
+            url: '/billings/paid'
+          },
+        ]*/
       },
       {
-        id: 'disabled-menu',
-        title: 'Disabled Menu',
-        type: 'item',
-        url: 'javascript:',
-        classes: 'nav-item disabled',
-        icon: 'feather icon-power',
-        external: true
-      },
-      {
-        id: 'buy_now',
-        title: 'Buy Now',
-        type: 'item',
-        icon: 'feather icon-book',
-        classes: 'nav-item',
-        url: 'https://codedthemes.com/item/datta-able-angular/',
-        target: true,
-        external: true
+        id: 'special-interest',
+        title: 'Special Interest Bills',
+        type: 'collapse',
+        icon: 'feather icon-eye',
+        children: [
+          {
+            id: 'si-return-bills',
+            title: 'Returned Bills',
+            type: 'item',
+            url: '/billings/returned-special-interest-bills'
+          },
+          {
+            id: 'si-verify',
+            title: 'Verify',
+            type: 'item',
+            url: '/billings/special-interest/verify'
+          },
+          {
+            id: 'si-authorize',
+            title: 'Authorize',
+            type: 'item',
+            url: '/billings/special-interest/authorize'
+          },
+          {
+            id: 'si-approve',
+            title: 'Approve',
+            type: 'item',
+            url: '/billings/special-interest/approve'
+          },
+          {
+            id: 'si-outstanding-bills',
+            title: 'SI Outstanding Bills',
+            type: 'item',
+            url: '/billings/special-interest/outstanding'
+          },
+        ]
       }
     ]
-  } */
+  },
+
+  {
+    id: 'objection',
+    title: 'Objection',
+    type: 'group',
+    icon: 'icon-bookmark',
+    children: [
+      {
+        id: 'objection-system',
+        title: 'Objection',
+        type: 'collapse',
+        icon: 'feather icon-help-circle',
+        children: [
+          {
+            id: 'requests',
+            title: 'Requests',
+            type: 'item',
+            url: '/objections/requests'
+          },
+          {
+            id: 'verification',
+            title: 'Verification',
+            type: 'item',
+            url: '/objections/verification'
+          },
+          {
+            id: 'authorization',
+            title: 'Authorization',
+            type: 'item',
+            url: '/objections/authorization'
+          },
+          {
+            id: 'approval',
+            title: 'Approval',
+            type: 'item',
+            url: '/objections/approval'
+          },
+          {
+            id: 'objected',
+            title: 'Objected Bills',
+            type: 'item',
+            url: '/billings/objected'
+          },
+        ]
+      }
+    ]
+  },
+
 ];
 
 @Injectable()
 export class NavigationItem {
+  constructor(
+    private apiService: ApiService) {
+  }
   get() {
-    return NavigationItems;
+    let permissions = this.apiService.getItem('permissions');
+    const permissionArray = permissions.split(',');
+
+    let role = this.apiService.getItem('role');
+    switch (role){
+      case 'ADMINISTRATOR':
+        return NavigationItems;
+      case 'BILLER':
+        return BillerNavigationItems;
+      case 'AUTHORIZER':
+        return BillerNavigationItems;
+      case 'APPROVER':
+        return BillerNavigationItems;
+      case 'REVIEWER':
+        return BillerNavigationItems;
+
+      default:
+        return [];
+    }
+
+
   }
 }

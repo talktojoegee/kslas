@@ -1,0 +1,172 @@
+
+
+<div class="row">
+  <div class="col-sm-12 col-lg-12 d-flex justify-content-end">
+    <div class="btn-group">
+      <button (click)="goBack()" type="button" class="btn btn-sm btn-secondary"> <i class="feather icon-skip-back"></i> Go Back</button>
+      <button data-bs-toggle="modal" data-bs-target="#user" type="button" class="btn btn-sm btn-primary"> <i class="feather icon-plus"></i> Add New User</button>
+
+    </div>
+  </div>
+
+</div>
+
+
+<div class="row" *ngIf="isLoading">
+  <div class="col-md-12 d-flex justify-content-center">
+    <div class="spinner-grow text-info" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+<div class="row mt-5" *ngIf="!isLoading">
+  <div class="col-sm-12 col-lg-12">
+    <app-card  cardTitle="Manage System Users" [options]="false">
+      <p>Total records <code>{{total.toLocaleString()}}</code></p>
+      <div class="table-responsive">
+        <p-table
+          #users
+          [value]="userList"
+          [loading]="isLoading"
+          [rows]="limit"
+          [globalFilterFields]="['username', 'idNo', 'email','mobileNo']"
+          class="table-striped"
+        >
+
+          <ng-template pTemplate="caption">
+            <div class="flex">
+             <span class="p-input-icon-left ml-auto">
+                <input
+                  style="padding:5px; font-size:12px;"
+                  pInputText
+                  type="text"
+                  (input)="users.filterGlobal($any($event.target).value, 'contains')"
+                  placeholder="Search keyword" />
+            </span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr class="text-uppercase">
+
+              <th scope="col">#</th>
+              <th scope="col">Name.</th>
+              <th pSortableColumn="email" scope="col">Email <p-sortIcon field="email" /></th>
+              <th pSortableColumn="mobileNo" scope="col">Mobile No. <p-sortIcon field="mobileNo" /></th>
+              <th pSortableColumn="username" scope="col">Username <p-sortIcon field="username" /></th>
+              <th pSortableColumn="idNo" scope="col">ID Number <p-sortIcon field="idNo" /></th>
+              <th scope="col">Sector</th>
+              <th  scope="col">Action</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowIndex="rowIndex" let-item>
+            <tr style="font-size:14px;">
+              <td>{{skip+rowIndex+1}}</td>
+              <td>{{item?.name }}</td>
+              <td>{{item?.email}}</td>
+              <td>{{item?.mobileNo}}</td>
+              <td>{{item?.username}}</td>
+              <td>{{item?.idNo}}</td>
+              <td>{{item?.sector}}</td>
+              <td>
+                <a href="#">View</a>
+
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <p-paginator
+          [first]="skip"
+          [rows]="limit"
+          [totalRecords]="total"
+          (onPageChange)="loadAdminUsers($event)"
+        />
+      </div>
+
+    </app-card>
+  </div>
+</div>
+<p-toast></p-toast>
+
+
+<div class="modal fade" id="user" tabindex="-1"  aria-labelledby="user" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success">
+        <h5 class="modal-title text-uppercase text-white" id="exampleModalLabel">Add New User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="form">
+          <div class="form-group">
+            <label for="">Full Name <sup class="text-danger">*</sup></label>
+            <input type="text" formControlName="name" placeholder="Full Name"  class="form-control shadow-none" >
+            <div *ngIf="form.controls['name'].touched && form.controls['name'].errors?.['required']" class="text-danger">
+              Full name  is required
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="">Email Address <sup class="text-danger">*</sup></label>
+            <input type="text" formControlName="email" placeholder="Email Address"  class="form-control shadow-none" >
+            <div *ngIf="form.controls['email'].touched && form.controls['email'].errors?.['required']" class="text-danger">
+              Email address is required
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="">Mobile No. <sup class="text-danger">*</sup></label>
+            <input type="text" formControlName="mobileNo" placeholder="Mobile No."  class="form-control shadow-none" >
+            <div *ngIf="form.controls['mobileNo'].touched && form.controls['mobileNo'].errors?.['required']" class="text-danger">
+              Mobile number  is required
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="">Username <sup class="text-danger">*</sup></label>
+            <input type="text" formControlName="username" placeholder="Username"  class="form-control shadow-none" >
+            <div *ngIf="form.controls['username'].touched && form.controls['username'].errors?.['required']" class="text-danger">
+              Username  is required
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="">ID Number <sup class="text-danger">*</sup></label>
+            <input type="text" formControlName="idNo" placeholder="ID Number"  class="form-control shadow-none" >
+            <div *ngIf="form.controls['idNo'].touched && form.controls['idNo'].errors?.['required']" class="text-danger">
+              ID Number  is required
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="sector">Sector <sup class="text-danger">*</sup></label>
+            <select name="sector" formControlName="sector" id="sector" class="form-control">
+              <option disabled selected>-- Select sector --</option>
+              @for(n of classList; track $index){
+              <option value="{{n?.id}}">{{n?.className}}</option>
+              }
+            </select>
+            <div *ngIf="form.controls['sector'].touched && form.controls['sector'].errors?.['required']" class="text-danger">
+              Sector  is required
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="role">Role <sup class="text-danger">*</sup></label>
+            <select name="role" formControlName="role" id="role" class="form-control">
+              <option disabled selected>-- Assign role --</option>
+              @for(item of roleList; track $index){
+              <option value="{{item?.id}}">{{item?.name}}</option>
+              }
+            </select>
+            <div *ngIf="form.controls['role'].touched && form.controls['role'].errors?.['required']" class="text-danger">
+              Role  is required
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+            <button type="button"  (click)="handleNewUserSubmission()" [disabled]="isFormSubmitted "  class="btn btn-success"> <i class="feather icon-check"></i> Submit</button>
+            <button class="btn btn-secondary btn-lg btn-block " disabled *ngIf="isFormSubmitted">Processing...</button>
+          </div>
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+</div>

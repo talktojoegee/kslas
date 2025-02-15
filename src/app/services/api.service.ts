@@ -113,7 +113,8 @@ export class ApiService {
   }
 
   downloadFile(url: string): Observable<Blob> {
-    return this.http.get(url, { responseType: 'blob' });
+    return this.http.get(`${this.baseUrl}/${url}`, { responseType: 'blob' });
   }
+
 
 }

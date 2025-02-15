@@ -1,0 +1,60 @@
+<div class="row">
+  <div class="col-sm-4 col-md-4">
+    <app-card class="text-uppercase" cardTitle="Add New Role" [options]="false">
+      <div class="row">
+        <div class="col-md-12">
+          <form [formGroup]="form">
+            <div class="form-group">
+              <label for="name"> Name <sup class="text-danger">*</sup></label>
+              <input name="name" id="name"  formControlName="name" autocomplete="off" type="text" placeholder=" Name" class="form-control shadow-none mt-2">
+              @if(form.controls['name'].touched && form.controls['name'].errors?.['required']){
+              <div  class=" text-danger text-capitalize">
+                Name is required
+              </div>
+              }
+            </div>
+            <div class="form-group d-flex justify-content-center">
+              <button (click)="onSaveRecord()" [disabled]="form.invalid " *ngIf="!isFormSubmitted" type="button" class="btn btn-primary btn-square"> <i class="feather icon-check-circle"></i> Submit</button>
+              <button type="button" disabled style="cursor: not-allowed" *ngIf="isFormSubmitted" class="btn btn-primary"><i class="fa fa-spinner fa-spin"></i> Processing  </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </app-card>
+  </div>
+
+
+  <div class="col-sm-8 col-md-8">
+    <app-card class="text-uppercase" cardTitle="Manage Roles" [options]="false">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              @for(item of roleList; track $index){
+              <tr>
+                <th>{{$index + 1}}</th>
+                        <td class="text-capitalize">{{ item.name }}</td>
+                        <td>
+                          <button class="btn btn-sm btn-glow btn-info" disabled type="button">No Action</button>
+                        </td>
+                      </tr>
+              }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </app-card>
+  </div>
+  <p-toast></p-toast>
+</div>
+
+

@@ -46,9 +46,17 @@ export class BillDetailComponent implements OnInit{
   statusInt : number = 0;
   billId : number = 0;
   returned : number = 0;
+  bbf : number = 0;
   propertyClass : string = '';
   occupancy : string = '';
 
+  la:number = 0;
+  lr:number = 0;
+  ba:number = 0;
+  br:number = 0;
+  dr:number = 0;
+  rr:number = 0;
+  cr:number = 0;
   //buildingCode: string = '';
   //assessmentNo: string = '';
   assessedValue: string = '';
@@ -64,6 +72,8 @@ export class BillDetailComponent implements OnInit{
   returnReason: string = '';
   balance: number = 0;
   special: number = 0;
+  luc: number = 0;
+  //assessValue: number = 0;
   formValue: any;
 
   form:FormGroup = new FormGroup({
@@ -73,6 +83,13 @@ export class BillDetailComponent implements OnInit{
     //action: new FormControl(""),
     billId: new FormControl(""),
     actionedBy: new FormControl(""),
+    la: new FormControl(""),
+    ba: new FormControl(""),
+    rr: new FormControl(""),
+    dr: new FormControl(""),
+    br: new FormControl(""),
+    lr: new FormControl(""),
+    //cr: new FormControl(""),
   });
 
   returnForm:FormGroup = new FormGroup({
@@ -132,6 +149,16 @@ export class BillDetailComponent implements OnInit{
       this.zone =  res.data.zone;
       this.billedBy =  res.data.billedBy;
       this.statusInt =  res.data.statusInt;
+
+
+      this.la = res.data.la;
+      this.ba = res.data.ba;
+      this.rr = res.data.rr;
+      this.dr = res.data.dr;
+      this.br = res.data.br;
+      this.lr = res.data.lr;
+
+
       //load default values
       this.form.setValue({
         lucAmount:res.data?.billAmount || 0,
@@ -139,8 +166,16 @@ export class BillDetailComponent implements OnInit{
         assessedValue:res.data?.assessValue || 0,
         billId:res.data?.billId,
         actionedBy:this.apiService.getItem('uuid'),
+        la:res.data?.la,
+        ba:res.data?.ba,
+        rr:res.data?.rr,
+        dr:res.data?.dr,
+        br:res.data?.br,
+        lr:res.data?.lr,
+        //cr:res.data?.cr,
       });
-      console.log(this.form);
+
+      //console.log(this.form);
 
     },error=>{
 
@@ -467,6 +502,37 @@ export class BillDetailComponent implements OnInit{
         detail: "Something went wrong."
       });
       this.isFormSubmitted = false;
+    })
+  }
+
+  calculateBill(){
+    this.la = this.form.get("la")?.value;
+    this.ba = this.form.get("ba")?.value;
+    this.rr = this.form.get("rr")?.value;
+    this.dr = this.form.get("dr")?.value;
+    this.br = this.form.get("br")?.value;
+    this.lr = this.form.get("lr")?.value;
+    this.cr = this.form.get("chargeRate")?.value;
+
+     let ba = (this.ba * 0.01) * this.la;
+     let dr = (100 - this.dr) * 0.01;
+     let rr = this.rr * 0.01;
+     let cr = (this.cr * 0.01);
+
+    let luc = ((this.la * this.lr) + (ba * this.br * dr)) * (rr * cr);
+    let assessVal = ((this.la * this.lr) + (ba * this.br * dr)) * (rr);
+    this.form.setValue({
+      lucAmount: luc,
+      assessedValue:assessVal,
+      chargeRate:this.cr,
+      billId:this.billId,
+      actionedBy:this.apiService.getItem('uuid'),
+      la:this.la,
+      ba:this.ba,
+      rr:this.rr,
+      dr:this.dr,
+      br:this.br,
+      lr:this.lr,
     })
   }
 

@@ -4,7 +4,7 @@
   <div class="col-sm-12 col-lg-12 d-flex justify-content-end">
     <div class="btn-group">
       <button (click)="goBack()" type="button" class="btn btn-sm btn-secondary"> <i class="feather icon-skip-back"></i> Go Back</button>
-      <button (click)="goBack()" type="button" class="btn btn-sm btn-info"> <i class="feather icon-file"></i> Export Record</button>
+      <button *isGranted="'USER'" (click)="downloadAttachment()" type="button" class="btn btn-sm btn-info"> <i class="feather icon-file"></i> Export Record</button>
     </div>
   </div>
 
@@ -42,7 +42,7 @@
 
         <div class="btn-group" *ngIf="selectedBills.length > 0">
           <button (click)="verifyAll()" class="btn btn-sm btn-primary"> <i class="feather icon-check"></i> Verify All</button>
-          <button class="btn btn-sm btn-danger"> <i class="feather icon-trash"></i> Decline All</button>
+          <button class="btn btn-sm btn-danger"> <i class="feather icon-trash"></i> Return All</button>
         </div>
 
       </div>
