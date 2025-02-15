@@ -22,7 +22,7 @@
 <div class="row mt-5" *ngIf="!isLoading">
   <div class="col-sm-12 col-lg-12">
     <app-card  cardTitle="Manage System Users" [options]="false">
-      <p>Total records <code>{{total.toLocaleString()}}</code></p>
+      <p>Total records: <code>{{total.toLocaleString()}}</code></p>
       <div class="table-responsive">
         <p-table
           #users
@@ -54,7 +54,7 @@
               <th pSortableColumn="mobileNo" scope="col">Mobile No. <p-sortIcon field="mobileNo" /></th>
               <th pSortableColumn="username" scope="col">Username <p-sortIcon field="username" /></th>
               <th pSortableColumn="idNo" scope="col">ID Number <p-sortIcon field="idNo" /></th>
-              <th scope="col">Sector</th>
+              <th scope="col">Role</th>
               <th  scope="col">Action</th>
             </tr>
           </ng-template>
@@ -66,9 +66,71 @@
               <td>{{item?.mobileNo}}</td>
               <td>{{item?.username}}</td>
               <td>{{item?.idNo}}</td>
-              <td>{{item?.sector}}</td>
+              <td>{{item?.role}}</td>
               <td>
-                <a href="#">View</a>
+                <a class="text-info" style="cursor:pointer;"  data-bs-toggle="modal" [attr.data-bs-target]="'#view_' + (skip+rowIndex+1)" >View</a>
+                <div class="modal fade" [id]="'view_' + (skip+rowIndex+1)" tabindex="-1"  aria-labelledby="'object_' + $index" aria-hidden="true">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title text-uppercase" >User <code>{{ item.name }}</code> </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <app-card  cardTitle="User Details" [options]="false">
+                              <div class="table-responsive">
+                                <table class="table table-striped">
+                                  <tbody>
+                                  <tr>
+                                    <td><strong class="text-muted">Full Name:</strong></td>
+                                    <td> {{item?.name}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong class="text-muted"> Email:</strong></td>
+                                    <td> {{item?.email}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong class="text-muted">Mobile No.:</strong></td>
+                                    <td> {{item?.mobileNo}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong class="text-muted">Username:</strong></td>
+                                    <td> {{item?.username}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong class="text-muted">ID Number:</strong></td>
+                                    <td> {{item?.idNo}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong class="text-muted">Sector:</strong></td>
+                                    <td> {{item?.sector}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong class="text-muted">Role:</strong></td>
+                                    <td> {{item?.role}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong class="text-muted">Permission(s):</strong></td>
+                                    <td>
+                                      @for(item of item?.permissions; track $index){
+                                        <li class="text-capitalize">{{ item }}</li>
+                                      }
+                                    </td>
+                                  </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </app-card>
+
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
 
               </td>
             </tr>

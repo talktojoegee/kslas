@@ -52,11 +52,21 @@
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Role</th>
+                <th scope="col">Permissions</th>
                 <th scope="col">Action</th>
               </tr>
               </thead>
               <tbody>
-
+              @for(item of rolePermissionList; track $index){
+              <tr>
+                <th>{{$index + 1}}</th>
+                        <td >{{ item.role }}</td>
+                        <td class='text-info'>{{ item.permissions }}</td>
+                        <td>
+                          <button class="btn btn-sm btn-glow btn-info" disabled type="button">No Action</button>
+                        </td>
+                      </tr>
+              }
               </tbody>
             </table>
           </div>

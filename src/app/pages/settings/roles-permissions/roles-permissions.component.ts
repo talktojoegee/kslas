@@ -24,6 +24,7 @@ export class RolesPermissionsComponent {
   title : string = "Assign Permissions";
   lgaObj : LGA = new LGA();
   roleList: any [] = [];
+  rolePermissionList: any [] = [];
   permissionList: any [] = [];
   errorBag: any[] = [];
   private baseUrl : string = environment.BASE_URL;
@@ -45,6 +46,7 @@ export class RolesPermissionsComponent {
 
     this.loadRoles();
     this.loadPermissions();
+    this.loadRolePermissions();
   }
 
   onSaveRecord(){
@@ -58,7 +60,7 @@ export class RolesPermissionsComponent {
         summary: 'Action successful',
         detail: 'Permission assignment done!'
       });
-      //this.loadRoles();
+      this.loadRolePermissions();
       this.form.reset();
     },error=>{
       this.isFormSubmitted = false;
@@ -67,6 +69,16 @@ export class RolesPermissionsComponent {
 
   }
 
+
+  loadRolePermissions(){
+    this.apiService.get(`access/roles-permission/all`).subscribe((result:any)=>{
+      this.rolePermissionList = result.data;
+      console.log(this.rolePermissionList)
+    },error => {
+      this.errorBag = error.message
+
+    })
+  }
 
   loadRoles(){
     this.apiService.get(`access/roles/all`).subscribe((result:any)=>{
