@@ -61,6 +61,24 @@ const NavigationItems = [
             url: '/settings/system-users'
           },
           {
+            id: 'roles',
+            title: 'Roles',
+            type: 'item',
+            url: '/settings/roles'
+          },
+          {
+            id: 'permissions',
+            title: 'Permissions',
+            type: 'item',
+            url: '/settings/permissions'
+          },
+          {
+            id: 'assign-permission',
+            title: 'Assign Permissions',
+            type: 'item',
+            url: '/settings/roles-permissions'
+          },
+          {
             id: 'lga',
             title: 'LGA',
             type: 'item',
@@ -113,24 +131,6 @@ const NavigationItems = [
             title: 'Charge Rate',
             type: 'item',
             url: '/settings/charge-rate'
-          },
-          {
-            id: 'roles',
-            title: 'Roles',
-            type: 'item',
-            url: '/settings/roles'
-          },
-          {
-            id: 'permissions',
-            title: 'Permissions',
-            type: 'item',
-            url: '/settings/permissions'
-          },
-          {
-            id: 'assign-permission',
-            title: 'Assign Permissions',
-            type: 'item',
-            url: '/settings/roles-permissions'
           },
 
         ]
@@ -188,7 +188,7 @@ const NavigationItems = [
             id: 'exception',
             title: 'Property Exceptions',
             type: 'item',
-            url: '#'
+            url: '/billings/property-exceptions'
           },
         ]
       },
@@ -248,22 +248,6 @@ const NavigationItems = [
             url: '/billings/paid'
           },
         ]
-
-        /*children: [
-
-          {
-            id: 'outstanding',
-            title: 'Outstanding Bills',
-            type: 'item',
-            url: '/billings/outstanding'
-          },
-          {
-            id: 'paid',
-            title: 'Paid Bills',
-            type: 'item',
-            url: '/billings/paid'
-          },
-        ]*/
       },
       {
         id: 'special-interest',
@@ -300,6 +284,12 @@ const NavigationItems = [
             title: 'SI Outstanding Bills',
             type: 'item',
             url: '/billings/special-interest/outstanding'
+          },
+          {
+            id: 'paid',
+            title: 'SI Paid Bills',
+            type: 'item',
+            url: '/billings/paid'
           },
         ]
       }
@@ -829,6 +819,130 @@ const UserNavigationItems = [
   },
 
 ];
+
+const HOUSE_KEEPINGNavigation = [
+  {
+    id: 'navigation',
+    title: 'Navigation',
+    type: 'group',
+    icon: 'icon-navigation',
+    children: [
+      {
+        id: 'dashboard',
+        title: 'Dashboard',
+        type: 'item',
+        url: '/dashboard',
+        icon: 'feather icon-home',
+        classes: 'nav-item'
+      }
+    ]
+  },
+  {
+    id: 'ui-settings',
+    title: 'General Settings',
+    type: 'group',
+    icon: 'icon-ui',
+    children: [
+      {
+        id: 'settings',
+        title: 'Settings',
+        type: 'collapse',
+        icon: 'feather icon-settings',
+        children: [
+          {
+            id: 'lga',
+            title: 'LGA',
+            type: 'item',
+            url: '/settings/lgas'
+          },
+          {
+            id: 'zones',
+            title: 'Zones',
+            type: 'item',
+            url: '/settings/zones'
+          },
+          {
+            id: 'relief',
+            title: 'Relief',
+            type: 'item',
+            url: '/settings/relief'
+          },
+          {
+            id: 'property-title',
+            title: 'Property Title',
+            type: 'item',
+            url: '/settings/property-title'
+          },
+          {
+            id: 'area-office',
+            title: 'Area Office',
+            type: 'item',
+            url: '/settings/area-office'
+          },
+          {
+            id: 'property-classification',
+            title: 'Prop. Classification',
+            type: 'item',
+            url: '/settings/property-classification'
+          },
+
+        ]
+      }
+    ]
+  }
+
+];
+const BILLING_SETUP_OBJ = [
+  {
+    id: 'property-assessment-value',
+    title: 'Billing Setup',
+    type: 'item',
+    url: '/settings/property-assessment-value'
+  },
+  {
+    id: 'depreciation',
+    title: 'Depreciation',
+    type: 'item',
+    url: '/settings/depreciation'
+  },
+  {
+    id: 'charge-rate',
+    title: 'Charge Rate',
+    type: 'item',
+    url: '/settings/charge-rate'
+  },
+
+]
+
+const USER_ACCOUNT_Navigation = [
+
+  {
+    id: 'system-users',
+    title: 'System Users',
+    type: 'item',
+    url: '/settings/system-users'
+  },
+  {
+    id: 'roles',
+    title: 'Roles',
+    type: 'item',
+    url: '/settings/roles'
+  },
+  {
+    id: 'permissions',
+    title: 'Permissions',
+    type: 'item',
+    url: '/settings/permissions'
+  },
+  {
+    id: 'assign-permission',
+    title: 'Assign Permissions',
+    type: 'item',
+    url: '/settings/roles-permissions'
+  },
+
+]
+
 
 @Injectable()
 export class NavigationItem {

@@ -61,6 +61,7 @@ import {SystemUsersComponent} from "./pages/settings/system-users/system-users.c
 import {RolesComponent} from "./pages/settings/roles/roles.component";
 import {PermissionsComponent} from "./pages/settings/permissions/permissions.component";
 import {RolesPermissionsComponent} from "./pages/settings/roles-permissions/roles-permissions.component";
+import {PropertyExceptionsComponent} from "./pages/billing/property-exceptions/property-exceptions.component";
 //import {ObjectedBillsComponent} from "./pages/billing/objected-bills/objected-bills.component";
 
 const routes: Routes = [
@@ -206,6 +207,11 @@ const routes: Routes = [
           {
             path: 'synchronization',
             component: SyncComponent,
+            canActivate:[AuthGuard],
+          },
+          {
+            path: 'property-exceptions',
+            component: PropertyExceptionsComponent,
             canActivate:[AuthGuard],
           },
           {

@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row mb-4">
   <div class="col-sm-12 col-lg-12 d-flex justify-content-end">
     <div class="btn-group">
       <button (click)="goBack()" type="button" class="btn btn-secondary"> <i class="feather icon-skip-back"></i> Go Back</button>
@@ -139,8 +139,8 @@
                       <h5 class=" label-value">Balance carried forward from previous years</h5>
                     </div>
                     <div class="mb-1">
-                      <h3 class="text-uppercase owner-labels">ANNUAL LUC {{record?.assessmentYear}}:</h3>
-                      <h5 class="text-uppercase label-value">Government House, Lokoja, Kogi State.</h5>
+                      <h3 class="text-uppercase owner-labels">ANNUAL LUC {{assessmentYear}}:</h3>
+                      <!--<h5 class="text-uppercase label-value">Government House, Lokoja, Kogi State.</h5>-->
                     </div>
                   </div>
 
@@ -149,19 +149,23 @@
                   <div class="col-md-6 pl-4 pt-2 align-content-end">
                     <div class="mb-1">
                       <h3 class="text-uppercase owner-labels">AMOUNT ({{ APP_CURRENCY}}):</h3>
-                      <h5 class="text-uppercase label-value">20,000.00</h5>
+                      <h5 class="text-uppercase label-value">{{record?.bbf.toLocaleString()}}</h5>
                     </div>
                     <div class="mb-1">
-                      <h3 class="text-uppercase owner-labels">25,000.00</h3>
-                      <h5>-</h5>
+                      <h3 class="text-uppercase owner-labels">{{(record?.billAmount).toLocaleString() }}</h3>
+                      <!--<h5>-</h5>-->
                     </div>
                   </div>
                 </div>
 
                 <div class="col-md-12  ">
                   <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                       <h3 class="text-uppercase text-left pl-3 owner-details">Total Amount Payable</h3>
+                    </div>
+                    <div class="col-md-6">
+                      <h3 class="text-uppercase text-left owner-details">{{(record?.billAmount + record?.bbf).toLocaleString() }}</h3>
+
                     </div>
 
                   </div>
@@ -250,7 +254,7 @@
   <div class="col-md-4 col-lg-4">
     <div class="card">
       <app-card cardTitle="Checkout" [options]="false">
-
+      <div *ngIf="record?.billAmount > record?.paidAmount">
         <form [formGroup]="form">
           <div class="form-group">
             <label for="fullName">Name <sup class="text-danger">*</sup></label>
@@ -273,19 +277,20 @@
         </form>
 
         <div class="form-group d-flex justify-content-center">
-          <angular4-paystack
-            [email]="email"
-            [amount]="10 * 100"
-            [ref]="reference"
-            [channels]="['card','bank']"
-            [class]="'btn btn-primary'"
-            (onClose)="paymentCancel()"
-            (callback)="paymentDone($event)"
+          <button
+            class="btn btn-lg btn-primary " (click)="startPayment()"
           >
             Make Payment
-          </angular4-paystack>
+          </button>
 
         </div>
+      </div>
+
+        <div *ngIf="record?.paidAmount >= record?.billAmount">
+          <h6 class="text-muted p-4 text-center">You can't collect further payment on this bill as it is fully paid.</h6>
+        </div>
+
+
       </app-card>
 
 

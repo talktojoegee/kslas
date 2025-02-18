@@ -40,6 +40,7 @@
                 <th scope="col">Class</th>
                 <th scope="col">Zone</th>
                 <th scope="col">Property Use</th>
+                <th scope="col">Sync Word</th>
                 <th scope="col">BR</th>
                 <th scope="col">LR</th>
                 <th scope="col">BA(%)</th>
@@ -54,6 +55,7 @@
                 <td>{{item?.className}}</td>
                 <td>{{item?.zones}}</td>
                 <td>{{item?.occupancy}}</td>
+                <td>{{item?.syncWord}}</td>
                 <td>{{item?.br}}</td>
                 <td>{{item?.lr}}</td>
                 <td>{{item?.ba}}</td>
@@ -160,12 +162,21 @@
 
               <div class="col-md-6">
                 <div class="form-group mb-3">
-                  <label for="description"> Description<sup class="text-danger">*</sup>:</label>
-                  <textarea name="description" style="resize:none;"  id="description"  formControlName="description"   class="form-control" placeholder=" Type description..."></textarea>
+                  <label for="description"> Property Use<sup class="text-danger">*</sup>:</label>
+                  <input name="description"  id="description"  formControlName="description"   class="form-control" placeholder=" Type property use here...">
                   <div *ngIf="pavForm.controls['description'].touched && pavForm.controls['description'].errors?.['required']" class="text-danger">
-                    Enter a brief description
+                    Property use is required
                   </div>
                   <!-- Server-side error -->
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="syncWord"> Sync Word<sup class="text-danger">*</sup>:</label>
+                  <input name="syncWord"  id="syncWord"  formControlName="syncWord"   class="form-control" placeholder=" Sync Word">
+                  <div *ngIf="pavForm.controls['syncWord'].touched && pavForm.controls['syncWord'].errors?.['required']" class="text-danger">
+                    Sync word is required
+                  </div>
                 </div>
               </div>
 
@@ -266,12 +277,21 @@
 
               <div class="col-md-6">
                 <div class="form-group mb-3">
-                  <label for="description"> Description<sup class="text-danger">*</sup>:</label>
-                  <textarea name="description" style="resize:none;"  id="description"  formControlName="description"   class="form-control" placeholder=" Type description..."></textarea>
+                  <label for="description1"> Property Use<sup class="text-danger">*</sup>:</label>
+                  <input name="description1"  id="description1"  formControlName="description"   class="form-control" placeholder=" Type property use here...">
                   <div *ngIf="editForm.controls['description'].touched && editForm.controls['description'].errors?.['required']" class="text-danger">
-                    Enter a brief description
+                    Property use is required
                   </div>
                   <!-- Server-side error -->
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="syncWord1"> Sync Word<sup class="text-danger">*</sup>:</label>
+                  <input name="syncWord1"  id="syncWord1"  formControlName="syncWord"   class="form-control" placeholder=" Sync Word">
+                  <div *ngIf="pavForm.controls['syncWord'].touched && pavForm.controls['syncWord'].errors?.['required']" class="text-danger">
+                    Sync word is required
+                  </div>
                 </div>
               </div>
 

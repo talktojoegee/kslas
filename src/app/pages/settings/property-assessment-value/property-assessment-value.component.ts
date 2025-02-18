@@ -55,6 +55,7 @@ export class PropertyAssessmentValueComponent implements OnInit{
     zone: ["", Validators.required],
     description: ["", Validators.required],
     id: ["", Validators.required],
+    syncWord: ["", Validators.required],
   });
 
   constructor(private fb: FormBuilder, private apiService: ApiService,
@@ -82,6 +83,7 @@ export class PropertyAssessmentValueComponent implements OnInit{
       class_id: ["1", Validators.required],
       zone: ["", Validators.required],
       description: ["", Validators.required],
+      syncWord: ["", Validators.required],
     });
   }
 
@@ -185,11 +187,8 @@ export class PropertyAssessmentValueComponent implements OnInit{
   launchModal(item){
     this.zoneOptions = [];
     this.loadZones();
-    //console.log(this.zoneOptions)
     this.editForm.setValue({
       pav_code:item?.pavCode || '',
-      //assessed_amount:item?.assessedAmount || '0',
-      //value_rate:item?.valueRate || '',
       ba:item?.ba || '0',
       rr:item?.rr || '0',
       lr:item?.lr || '0',
@@ -197,7 +196,8 @@ export class PropertyAssessmentValueComponent implements OnInit{
       zone:item?.zone?.split(', ') || [],
       class_id:item?.className || '',
       description:item?.occupancy || '',
-      id:item?.id
+      id:item?.id,
+      syncWord:item?.syncWord,
     });
     //zone:this.zoneOptions,
     this.openModal("editBillingSetup");

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Renderer2} from '@angular/core';
 import {CardComponent} from "../../../theme/shared/components/card/card.component";
 import {CommonModule, Location} from "@angular/common";
 import {ApiService} from "../../../services/api.service";
@@ -28,6 +28,11 @@ export class MakePaymentComponent implements OnInit{
   record:any;
   formValue:any;
   billId:number = 0;
+  amount:number = 0;
+  bbf : number = 0;
+  name:string  = '';
+  mobileNo:string = '';
+  private handler: any;
   form!:FormGroup;
 
   constructor(private apiService: ApiService,
@@ -35,7 +40,8 @@ export class MakePaymentComponent implements OnInit{
               private location:Location,
               private fb: FormBuilder,
               public router: Router,
-              private messageService: MessageService
+              private messageService: MessageService,
+              private renderer: Renderer2
               ) {
   }
   initiateForm(){
@@ -46,7 +52,9 @@ export class MakePaymentComponent implements OnInit{
       amount: ["", Validators.required],
       billId: ["", Validators.required],
       paidBy: ["", Validators.required],
-      amountLabel: [""]
+      amountLabel: [""],
+      transRef: [""],
+      reference: [""],
     });
   }
   goBack(): void {
@@ -84,25 +92,89 @@ export class MakePaymentComponent implements OnInit{
     this.route.paramMap.subscribe(params => {
       this.url = this.route.snapshot.paramMap.get('url') || '';
       this.loadBill();
+      this.loadCredoScript();
     });
     this.initiateForm();
     this.reference = `ref-${Math.ceil(Math.random() * 10e13)}`;
   }
 
+  loadCredoScript() {
+    const script = this.renderer.createElement('script');
+    script.src = "https://pay.credocentral.com/inline.js";
+    script.type = "text/javascript";
+    script.async = true;
+    script.onload = () => {
+      this.initializeCredoWidget();
+    };
+    this.renderer.appendChild(document.body, script);
+  }
+
+  initializeCredoWidget() {
+    //let amount : number = 0;
+    const generateRandomNumber = (min: number, max: number) =>
+      Math.floor(Math.random() * (max - min) + min);
+
+    const transRef = `iy67f${generateRandomNumber(10, 60)}hvc${generateRandomNumber(10, 90)}`;
+    let publishableKey = environment.CREDO_PUBLISHABLE_KEY;
+
+    this.handler = (window as any).CredoWidget.setup({
+      key: publishableKey,
+      customerFirstName: this.name,
+      customerLastName: this.name,
+      email: this.email,
+      amount: (this.amount * 100),
+      currency: 'NGN',
+      renderSize: 0,
+      channels: ['card', 'bank'],
+      reference: transRef,
+      customerPhoneNumber: this.mobileNo,
+      //callbackUrl: 'https://merchant-test-line.netlify.app/successful',
+      onClose: () => {
+        console.log('Widget Closed');
+      },
+      callBack: (response: any) => {
+        this.form.setValue({
+          transRef:response.transRef,
+          reference:response.reference,
+          name:this.name || 'Customer Name',
+          amountLabel:`${this.APP_CURRENCY}${this.amount.toLocaleString()}`,
+          amount:this.amount,
+          email:this.email,
+          mobileNo:this.mobileNo,
+          billId:this.billId,
+          paidBy:this.apiService.getItem('uuid'),
+        });
+        this.handleSuccessfulPayment();
+      }
+    });
+  }
+
+  startPayment() {
+    if (this.handler) {
+      this.handler.openIframe();
+    } else {
+      //console.error('Payment handler not initialized');
+    }
+  }
+
   loadBill(){
     this.apiService.get(`billing/detail/${this.url}`).subscribe((res:any)=>{
       this.record = res.data;
-      this.email = res.data.ownerEmail || 'no-reply@kslas.com';
-      let mobileNo = res.data.phoneNo || 234;
+      this.email = res.data?.ownerEmail || 'no-reply@kslas.com';
+      this.mobileNo = res.data?.phoneNo || 234;
+      this.name = res.data?.ownerName;
+      this.amount = res.data?.billAmount;
       this.billId = res.data.billId;
       this.form.setValue({
         name:res.data.ownerName,
         amountLabel:`${this.APP_CURRENCY}${res.data.billAmount.toLocaleString()}`,
         amount:res.data.billAmount,
         email:this.email,
-        mobileNo:mobileNo,
+        mobileNo:this.mobileNo,
         billId:this.billId,
-        paidBy:this.apiService.getItem('uuid')
+        paidBy:this.apiService.getItem('uuid'),
+        transRef:'',
+        reference:'',
       })
 
     },error=>{
@@ -124,8 +196,9 @@ export class MakePaymentComponent implements OnInit{
           detail: "Payment successful"
         });
 
+        this.ngOnInit();
 
-        this.delayAndRedirect('/billings/approve');
+        //this.delayAndRedirect('/billings/approve');
 
       },(error:any)=>{
         this.isFormSubmitted = false;

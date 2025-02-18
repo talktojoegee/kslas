@@ -1,0 +1,85 @@
+<div class="row mb-3 ">
+  <div class="col-md-12 d-flex justify-content-end">
+    <div class="btn-group">
+      <button (click)="goBack()" class="btn btn-sm btn-secondary"> <i class="feather icon-skip-back"></i>  Go Back </button>
+
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 col-lg-12 col-sm-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+        <div class="header-title">
+          <h5 class="card-title text-uppercase">Property Exceptions</h5>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>Total: <code>{{total.toLocaleString()}}</code> records</p>
+        <div class="table-responsive">
+          <p-table
+            #propertyTable
+            [value]="propertyList"
+            [loading]="isLoading"
+            [rows]="limit"
+            [globalFilterFields]="['building_code', 'pav_code', 'owner_name', 'lga_name', 'title']"
+          >
+            <ng-template pTemplate="caption">
+              <div class="flex">
+             <span class="p-input-icon-left ml-auto">
+                <input
+                  style="padding:5px;"
+                  pInputText
+                  type="text"
+                  (input)="propertyTable.filterGlobal($any($event.target).value, 'contains')"
+                  placeholder="Search keyword" />
+            </span>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr class="text-uppercase">
+                <th scope="col" >#</th>
+                <th pSortableColumn="buildingCode" scope="col" >Building Code <p-sortIcon field="buildingCode" /></th>
+                <th pSortableColumn="owner" scope="col">Owner <p-sortIcon field="owner" /></th>
+                <th pSortableColumn="pavCode" scope="col">Billing Code <p-sortIcon field="pavCode" /></th>
+                <th scope="col">Zone</th>
+                <th pSortableColumn="lgaName" scope="col">LGA <p-sortIcon field="lgaName" /></th>
+                <th pSortableColumn="class" scope="col">Class <p-sortIcon field="class" /></th>
+                <th scope="col">Occupancy</th>
+                <th scope="col">Action</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowIndex="rowIndex" let-item>
+              <tr style="font-size:14px;">
+                <th>{{ skip+rowIndex+1 }}</th>
+                <td>{{ item?.buildingCode }}</td>
+                <td>{{ item?.owner }}</td>
+                <td>{{ item?.pavCode }}</td>
+                <td>{{ item?.zoneName || '-' }}</td>
+                <td>{{ item?.lgaName || '-' }}</td>
+                <td>{{ item?.class || '-' }}</td>
+                <td>{{ item?.occupancy || '-' }}</td>
+                <td>
+                  <a [routerLink]="['/owner-management/property-details/', item.id]"><i class="feather icon-settings text-muted"></i></a>
+                </td>
+              </tr>
+            </ng-template>
+
+          </p-table>
+          <p-paginator
+            [first]="skip"
+            [rows]="limit"
+            [totalRecords]="total"
+            (onPageChange)="fetchData($event)"
+          />
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <p-toast></p-toast>
+
+
+</div>

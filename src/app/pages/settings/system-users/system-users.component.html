@@ -196,13 +196,13 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="sector">Sector <sup class="text-danger">*</sup></label>
-            <select name="sector" formControlName="sector" id="sector" class="form-control">
-              <option disabled selected>-- Select sector --</option>
-              @for(n of classList; track $index){
-              <option value="{{n?.id}}">{{n?.className}}</option>
-              }
-            </select>
+            <label for="sector">Sector <sup class="text-danger">*</sup></label> <br>
+            <p-multiSelect
+              [options]="sectorList"
+              formControlName="sector"
+              placeholder="Select sector"
+              optionLabel="name"
+              [showClear]="true" />
             <div *ngIf="form.controls['sector'].touched && form.controls['sector'].errors?.['required']" class="text-danger">
               Sector  is required
             </div>

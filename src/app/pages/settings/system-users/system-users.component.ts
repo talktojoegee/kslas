@@ -13,11 +13,12 @@ import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
 import {PaginatorModule} from "primeng/paginator";
 import {ToastModule} from "primeng/toast";
+import {MultiSelectModule} from "primeng/multiselect";
 
 @Component({
   selector: 'app-system-users',
   imports: [RouterLink, CommonModule, CardComponent, TableModule, Button,
-    IconFieldModule, InputIconModule, PaginatorModule, ToastModule, ReactiveFormsModule],
+    IconFieldModule, InputIconModule, MultiSelectModule, PaginatorModule, ToastModule, ReactiveFormsModule],
   templateUrl: './system-users.component.html',
   styleUrl: './system-users.component.scss',
   providers:[MessageService]
@@ -27,6 +28,7 @@ export class SystemUsersComponent implements OnInit{
   title : string = "System Users";
   lgaObj : LGA = new LGA();
   lgaList: any [] = [];
+  sectorList: any [] = [];
   errorBag: any[] = [];
   isLoading: boolean;
   skip: 0;
@@ -67,6 +69,7 @@ export class SystemUsersComponent implements OnInit{
   ngOnInit() {
     this.loadAdminUsers({ first: 0, rows: 20 });
     this.loadRoles();
+    this.loadSectors();
     this.loadClasses();
 
   }
@@ -142,6 +145,21 @@ export class SystemUsersComponent implements OnInit{
   loadRoles(){
     this.apiService.get(`access/roles/all`).subscribe((result:any)=>{
       this.roleList = result.data;
+    },error => {
+      this.errorBag = error.message
+
+    })
+  }
+  loadSectors(){
+    this.apiService.get(`sectors/distinct`).subscribe((result:any)=>{
+      result.data.map((sector)=>{
+        const obj = {
+          name:sector.sector,
+          value:sector.sector,
+        }
+        this.sectorList.push(obj)
+      });
+
     },error => {
       this.errorBag = error.message
 

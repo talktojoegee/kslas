@@ -58,7 +58,8 @@ export class ApproveBillsComponent implements OnInit{
     this.skip = event.first || 0;
     this.limit = event.rows || 0;
     const status = 2;
-    let url = `billing/bills/${this.limit}/${this.skip}/${status}`;
+    let authUser = this.apiService.getItem('uuid');
+    let url = `billing/bills/${authUser}/${this.limit}/${this.skip}/${status}`;
     this.apiService.get(url).subscribe((result:any)=>{
       this.billList = result.data;
       this.total = result.total;
