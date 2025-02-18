@@ -50,7 +50,8 @@ export class ReturnedSpecialInterestBillsComponent implements OnInit{
     this.isLoading = true;
     this.skip = event.first || 0;
     this.limit = event.rows || 0;
-    let url = `billing/returned-special-interest-bills/${this.limit}/${this.skip}`;
+    let authUser = this.apiService.getItem('uuid');
+    let url = `billing/returned-special-interest-bills/${authUser}/${this.limit}/${this.skip}`;
     this.apiService.get(url).subscribe((result:any)=>{
       this.billList = result.data;
       this.total = result.total;

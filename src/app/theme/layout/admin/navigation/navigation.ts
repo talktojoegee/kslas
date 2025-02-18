@@ -25,6 +25,7 @@ export interface Navigation extends NavigationItem {
   children?: NavigationItem[];
 }
 
+//Admin navigation
 const NavigationItems = [
   {
     id: 'navigation',
@@ -286,10 +287,10 @@ const NavigationItems = [
             url: '/billings/special-interest/outstanding'
           },
           {
-            id: 'paid',
+            id: 'si-paid',
             title: 'SI Paid Bills',
             type: 'item',
-            url: '/billings/paid'
+            url: '/billings/paid-special-interest-bills'
           },
         ]
       }
@@ -392,6 +393,7 @@ const NavigationItems = [
 
 ];
 
+
 const BillerNavigationItems = [
   {
     id: 'navigation',
@@ -406,6 +408,35 @@ const BillerNavigationItems = [
         url: '/dashboard',
         icon: 'feather icon-home',
         classes: 'nav-item'
+      }
+    ]
+  },
+  {
+    id: 'ui-settings',
+    title: 'General Settings',
+    type: 'group',
+    icon: 'icon-ui',
+    children: [
+      {
+        id: 'settings',
+        title: 'Settings',
+        type: 'collapse',
+        icon: 'feather icon-settings',
+        children: [
+          {
+            id: 'depreciation',
+            title: 'Depreciation',
+            type: 'item',
+            url: '/settings/depreciation'
+          },
+          {
+            id: 'charge-rate',
+            title: 'Charge Rate',
+            type: 'item',
+            url: '/settings/charge-rate'
+          },
+
+        ]
       }
     ]
   },
@@ -492,22 +523,6 @@ const BillerNavigationItems = [
             url: '/billings/paid'
           },
         ]
-
-        /*children: [
-
-          {
-            id: 'outstanding',
-            title: 'Outstanding Bills',
-            type: 'item',
-            url: '/billings/outstanding'
-          },
-          {
-            id: 'paid',
-            title: 'Paid Bills',
-            type: 'item',
-            url: '/billings/paid'
-          },
-        ]*/
       },
       {
         id: 'special-interest',
