@@ -24,14 +24,61 @@ export class MakePaymentComponent implements OnInit{
   reference:string = '';
   title:string = '';
   url:string = '';
-  email:string = '';
+  email:any;
   record:any;
   formValue:any;
   billId:number = 0;
   amount:number = 0;
   bbf : number = 0;
-  name:string  = '';
-  mobileNo:string = '';
+  name:any;
+  kgtin:any;
+  mobileNo:any;
+
+
+
+
+  ownerName:string = '';
+  buildingCode:string = '';
+  contactAddress:string = '';
+  propertyClassification:string = '';
+  kgTin:string = '';
+  pavCode:string = '';
+  entryDate:string = '';
+  assessmentNo:string = '';
+  propertyAddress:string = '';
+  phoneNo:string = '';
+  assessValue: number = 0;
+  chargeRate:number = 0;
+  statusInt : number = 0;
+
+  returned : number = 0;
+
+  propertyClass : string = '';
+  occupancy : string = '';
+  assessedValue: string = '';
+
+  la:number = 0;
+  lr:number = 0;
+  ba:number = 0;
+  br:number = 0;
+  dr:number = 0;
+  rr:number = 0;
+  cr:number = 0;
+  zone: string = '';
+  billAmount:number = 0;
+  date: string = '';
+  billedBy: string = '';
+  paid:number = 0;
+  paidAmount: number = 0;
+  objection: number = 0;
+  year: number = 0;
+  lgaName: string = '';
+  returnReason: string = '';
+  balance: number = 0;
+  special: number = 0;
+  luc: number = 0;
+
+
   private handler: any;
   form!:FormGroup;
 
@@ -55,6 +102,7 @@ export class MakePaymentComponent implements OnInit{
       amountLabel: [""],
       transRef: [""],
       reference: [""],
+      kgtin: [""],
     });
   }
   goBack(): void {
@@ -92,9 +140,10 @@ export class MakePaymentComponent implements OnInit{
     this.route.paramMap.subscribe(params => {
       this.url = this.route.snapshot.paramMap.get('url') || '';
       this.loadBill();
+      this.initiateForm();
       this.loadCredoScript();
     });
-    this.initiateForm();
+
     this.reference = `ref-${Math.ceil(Math.random() * 10e13)}`;
   }
 
@@ -107,6 +156,20 @@ export class MakePaymentComponent implements OnInit{
       this.initializeCredoWidget();
     };
     this.renderer.appendChild(document.body, script);
+  }
+
+
+  startPayment() {
+    if (this.handler) {
+      this.email = this.form.get("email").value;
+      this.name = this.form.get("name").value;
+      this.mobileNo = this.form.get("mobileNo").value;
+      this.kgtin = this.form.get("kgtin").value;
+
+      this.initializeCredoWidget();
+      this.handler.openIframe();
+    } else {
+    }
   }
 
   initializeCredoWidget() {
@@ -130,18 +193,23 @@ export class MakePaymentComponent implements OnInit{
       customerPhoneNumber: this.mobileNo,
       //callbackUrl: 'https://merchant-test-line.netlify.app/successful',
       onClose: () => {
-        console.log('Widget Closed');
+        //console.log('Widget Closed');
       },
       callBack: (response: any) => {
+        let email = this.form.get("email").value;
+        let name = this.form.get("name").value;
+        let mobileNo = this.form.get("mobileNo").value;
+        let kgtin = this.form.get("kgtin").value;
         this.form.setValue({
           transRef:response.transRef,
           reference:response.reference,
-          name:this.name || 'Customer Name',
+          name:name || 'Customer Name',
           amountLabel:`${this.APP_CURRENCY}${this.amount.toLocaleString()}`,
           amount:this.amount,
-          email:this.email,
-          mobileNo:this.mobileNo,
+          email:email,
+          mobileNo:mobileNo,
           billId:this.billId,
+          kgtin:kgtin,
           paidBy:this.apiService.getItem('uuid'),
         });
         this.handleSuccessfulPayment();
@@ -149,12 +217,6 @@ export class MakePaymentComponent implements OnInit{
     });
   }
 
-  startPayment() {
-    if (this.handler) {
-      this.handler.openIframe();
-    } else {
-    }
-  }
 
   loadBill(){
     this.apiService.get(`billing/detail/${this.url}`).subscribe((res:any)=>{
@@ -164,6 +226,54 @@ export class MakePaymentComponent implements OnInit{
       this.name = res.data?.ownerName;
       this.amount = res.data?.billAmount;
       this.billId = res.data.billId;
+
+      this.billId = res.data.billId;
+      this.ownerName = res.data.ownerName;
+      this.buildingCode = res.data.buildingCode;
+      this.contactAddress = res.data.contactAddress;
+      this.propertyClassification = res.data.propertyClassification;
+      this.kgTin = res.data.kgTin;
+      this.year = res.data.year;
+      this.entryDate = res.data.entryDate;
+      this.assessmentNo = res.data.assessmentNo;
+      this.propertyAddress = res.data.propertyAddress;
+      this.phoneNo = res.data.phoneNo;
+      this.assessValue = res.data.assessValue;
+      this.chargeRate = res.data.chargeRate;
+
+      this.buildingCode = res.data.buildingCode;
+      this.assessmentNo =  res.data.assessmentNo;
+      this.assessedValue =  res.data.assessedValue;
+      this.billAmount = res.data.billAmount;
+      this.date =  res.data.date;
+      this.paid = res.data.paid;
+      this.paidAmount =  res.data.paidAmount;
+      this.objection =  res.data.objection;
+      this.assessmentYear =  res.data.year;
+      this.url = res.data.url;
+      this.returned = res.data.returned;
+      this.special = res.data.special;
+
+      this.propertyClass = res.data.class;
+      this.occupancy = res.data.occupancy;
+      this.returnReason = res.data.reason;
+
+      this.balance = res.data.balance;
+      this.lgaName =  res.data.lgaName;
+      this.pavCode =  res.data.pavCode;
+      this.zone =  res.data.zone;
+      this.billedBy =  res.data.billedBy;
+      this.statusInt =  res.data.statusInt;
+
+
+      this.la = res.data.la;
+      this.ba = res.data.ba;
+      this.rr = res.data.rr;
+      this.dr = res.data.dr;
+      this.br = res.data.br;
+      this.lr = res.data.lr;
+
+
       this.form.setValue({
         name:res.data.ownerName,
         amountLabel:`${this.APP_CURRENCY}${res.data.billAmount.toLocaleString()}`,
@@ -174,6 +284,7 @@ export class MakePaymentComponent implements OnInit{
         paidBy:this.apiService.getItem('uuid'),
         transRef:'',
         reference:'',
+        kgtin:res.data.kgTin
       })
 
     },error=>{
@@ -187,8 +298,6 @@ export class MakePaymentComponent implements OnInit{
       this.formValue = this.form.value;
       this.apiService.post(`billing/make-payment`, this.formValue).subscribe((res:any)=>{
         this.isFormSubmitted = false;
-
-
         this.messageService.add({
           severity: 'success',
           summary: 'Action successful',
