@@ -157,7 +157,7 @@ export class PropertyExceptionsComponent {
   fetchData(event: any): void {
     this.skip = event.first || 0;
     this.limit = event.rows || 0;
-    let url = `property-list/all/${this.limit}/${this.skip}`;
+    let url = `property-exception/all/${this.limit}/${this.skip}`;
     this.apiService.get(url).subscribe((result:any)=>{
       this.propertyList = result.list;
       this.total = result.total;

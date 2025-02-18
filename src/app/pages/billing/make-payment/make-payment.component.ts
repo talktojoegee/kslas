@@ -153,7 +153,6 @@ export class MakePaymentComponent implements OnInit{
     if (this.handler) {
       this.handler.openIframe();
     } else {
-      //console.error('Payment handler not initialized');
     }
   }
 
@@ -195,11 +194,7 @@ export class MakePaymentComponent implements OnInit{
           summary: 'Action successful',
           detail: "Payment successful"
         });
-
         this.ngOnInit();
-
-        //this.delayAndRedirect('/billings/approve');
-
       },(error:any)=>{
         this.isFormSubmitted = false;
       })
