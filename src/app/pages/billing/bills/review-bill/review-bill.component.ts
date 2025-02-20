@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import { Component } from '@angular/core';
 import {environment} from "../../../../../environments/environment.development";
 import {ApiService} from "../../../../services/api.service";
 import {MessageService} from "primeng/api";
+import {RbacService} from "../../../../services/rbac.service";
 import {CommonModule, Location} from "@angular/common";
 import {RouterLink} from "@angular/router";
 import {CardComponent} from "../../../../theme/shared/components/card/card.component";
@@ -10,15 +11,18 @@ import {Button} from "primeng/button";
 import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
 import {PaginatorModule} from "primeng/paginator";
+import {ToastModule} from "primeng/toast";
 
 @Component({
-  selector: 'app-all-pending-bills',
+  selector: 'app-review-bill',
   imports: [RouterLink, CommonModule, CardComponent, TableModule, Button,
-    IconFieldModule, InputIconModule, PaginatorModule],
-  templateUrl: './all-pending-bills.component.html',
-  styleUrl: './all-pending-bills.component.scss'
+    IconFieldModule, InputIconModule, PaginatorModule, ToastModule],
+  templateUrl: './review-bill.component.html',
+  styleUrl: './review-bill.component.scss',
+  providers:[MessageService]
 })
-export class AllPendingBillsComponent implements OnInit {
+export class ReviewBillComponent {
+
 
 
 
@@ -31,14 +35,15 @@ export class AllPendingBillsComponent implements OnInit {
   grossBill:number = 0;
   grossAmountPaid:number = 0;
   balanceAmount:number = 0;
-  selectedBills: any[] = [];
   total:number = 0;
   skip: number = 0;
   limit: number = 20;
+  selectedBills: any[] = [];
   billingYear:number = new Date().getFullYear();
   searchValue: string | undefined;
   constructor(private apiService: ApiService,
               private messageService: MessageService,
+              private rbacService: RbacService,
               private location: Location) {}
 
 
@@ -52,8 +57,9 @@ export class AllPendingBillsComponent implements OnInit {
     this.isLoading = true;
     this.skip = event.first || 0;
     this.limit = event.rows || 0;
+    const status = 0;
     let authUser = this.apiService.getItem('uuid');
-    let url = `billing/all-pending-bills/${authUser}/${this.limit}/${this.skip}`;
+    let url = `billing/bills/${authUser}/${this.limit}/${this.skip}/${status}`;
     this.apiService.get(url).subscribe((result:any)=>{
       this.billList = result.data;
       this.total = result.total;
@@ -71,8 +77,6 @@ export class AllPendingBillsComponent implements OnInit {
   goBack(): void {
     this.location.back();
   }
-
-
   onSelectChange(event:Event){
     const selectedValue = (event.target as HTMLSelectElement).value;
     this.limit = Number(selectedValue);
@@ -101,5 +105,42 @@ export class AllPendingBillsComponent implements OnInit {
     return this.selectedBills.map(bill => bill.billId);
   }
 
+  reviewAll() {
+    let ids = this.getSelectedBillIds();
+    let url = `billing/bills/bulk-action`;
+    let authUser = this.apiService.getItem('uuid');
+    this.apiService.post(url,{ids,action:'review', actionedBy:authUser}).subscribe((result:any)=>{
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Great!',
+        detail: "Action successful"
+      });
+      this.selectedBills = [];
+      this.isLoading = false;
+      this.loadBills({ first: 0, rows: this.limit })
+
+    },error => {
+      this.errorBag = error.message
+      this.isLoading = false;
+
+    })
+  }
+
+
+  downloadAttachment() {
+    this.apiService.downloadFile(`export-bills`).subscribe((response)=>{
+      this.isFormSubmitted = false;
+      const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'bills.xlsx';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    },error=>{
+
+      this.isFormSubmitted = false;
+    })
+  }
 
 }

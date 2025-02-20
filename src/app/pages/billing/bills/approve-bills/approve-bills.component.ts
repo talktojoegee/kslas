@@ -57,7 +57,7 @@ export class ApproveBillsComponent implements OnInit{
     this.isLoading = true;
     this.skip = event.first || 0;
     this.limit = event.rows || 0;
-    const status = 2;
+    const status = 3;
     let authUser = this.apiService.getItem('uuid');
     let url = `billing/bills/${authUser}/${this.limit}/${this.skip}/${status}`;
     this.apiService.get(url).subscribe((result:any)=>{
@@ -110,13 +110,15 @@ export class ApproveBillsComponent implements OnInit{
   approveAll() {
     let ids = this.getSelectedBillIds();
     let url = `billing/bills/bulk-action`;
-    this.apiService.post(url,{ids,action:'approve'}).subscribe((result:any)=>{
+    let authUser = this.apiService.getItem('uuid');
+    this.apiService.post(url,{ids,action:'approve', actionedBy:authUser}).subscribe((result:any)=>{
       this.messageService.add({
         severity: 'success',
         summary: 'Great!',
         detail: "Action successful"
       });
       this.isLoading = false;
+      this.selectedBills = [];
       this.loadBills({ first: 0, rows: this.limit })
 
     },error => {

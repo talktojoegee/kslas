@@ -55,7 +55,7 @@ export class AuthorizeBillsComponent  implements  OnInit{
     this.isLoading = true;
     this.skip = event.first || 0;
     this.limit = event.rows || 0;
-    const status = 1;
+    const status = 2;
     let authUser = this.apiService.getItem('uuid');
     let url = `billing/bills/${authUser}/${this.limit}/${this.skip}/${status}`;
     this.apiService.get(url).subscribe((result:any)=>{
@@ -107,12 +107,14 @@ export class AuthorizeBillsComponent  implements  OnInit{
   authorizeAll() {
     let ids = this.getSelectedBillIds();
     let url = `billing/bills/bulk-action`;
-    this.apiService.post(url,{ids,action:'authorize'}).subscribe((result:any)=>{
+    let authUser = this.apiService.getItem('uuid');
+    this.apiService.post(url,{ids,action:'authorize', actionedBy:authUser}).subscribe((result:any)=>{
       this.messageService.add({
         severity: 'success',
         summary: 'Great!',
         detail: "Action successful"
       });
+      this.selectedBills = [];
       this.isLoading = false;
       this.loadBills({ first: 0, rows: this.limit })
 

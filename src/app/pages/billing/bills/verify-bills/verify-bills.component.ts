@@ -51,31 +51,13 @@ export class VerifyBillsComponent  implements OnInit{
   ngOnInit() {
 
     this.loadBills({ first: 0, rows: 20 });
-
-    /*if (this.rbacService.isGranted(Roles.ADMINISTRATOR)) {
-      console.log('Access granted for administrator!');
-    } else {
-      console.log('Access denied for administrator!');
-    }
-
-    if (this.rbacService.isGranted(Roles.STAFF)) {
-      console.log('Access granted for staff!');
-    } else {
-      console.log('Access denied for staff!');
-    }
-
-    if (this.rbacService.isGranted(Roles.USER)) {
-      console.log('Access granted for user!');
-    } else {
-      console.log('Access denied for user!');
-    }*/
   }
 
   loadBills(event: any) {
     this.isLoading = true;
     this.skip = event.first || 0;
     this.limit = event.rows || 0;
-    const status = 0;
+    const status = 1;
     let authUser = this.apiService.getItem('uuid');
     let url = `billing/bills/${authUser}/${this.limit}/${this.skip}/${status}`;
     this.apiService.get(url).subscribe((result:any)=>{
@@ -126,12 +108,14 @@ export class VerifyBillsComponent  implements OnInit{
   verifyAll() {
     let ids = this.getSelectedBillIds();
     let url = `billing/bills/bulk-action`;
-    this.apiService.post(url,{ids,action:'verify'}).subscribe((result:any)=>{
+    let authUser = this.apiService.getItem('uuid');
+    this.apiService.post(url,{ids,action:'verify', actionedBy:authUser}).subscribe((result:any)=>{
       this.messageService.add({
         severity: 'success',
         summary: 'Great!',
         detail: "Action successful"
       });
+      this.selectedBills = [];
       this.isLoading = false;
       this.loadBills({ first: 0, rows: this.limit })
 

@@ -20,7 +20,7 @@
 </div>
 <div class="row mt-5" *ngIf="!isLoading">
   <div class="col-sm-12 col-lg-12">
-    <app-card  cardTitle="Verify Bills" [options]="false">
+    <app-card  cardTitle="Review Bills" [options]="false">
       <p>Total records <code>{{total.toLocaleString()}}</code></p>
       <div class="col-md-4">
         <div class="input-group mb-3" >
@@ -41,7 +41,7 @@
         <p>Showing <span class="text-info">{{limit.toLocaleString()}}</span>  records of <code>{{total.toLocaleString()}}</code></p>
 
         <div class="btn-group" *ngIf="selectedBills.length > 0">
-          <button (click)="verifyAll()" class="btn btn-sm btn-primary"> <i class="feather icon-check"></i> Verify All</button>
+          <button (click)="reviewAll()" class="btn btn-sm btn-primary"> <i class="feather icon-check"></i> Review All</button>
           <button class="btn btn-sm btn-danger"> <i class="feather icon-trash"></i> Return All</button>
         </div>
 
@@ -52,8 +52,8 @@
           [value]="billList"
           [loading]="isLoading"
           [rows]="limit"
-          [globalFilterFields]="['buildingCode', 'categoryName', 'owner','zoneName', 'assessmentNo']"
-           class="table-striped"
+          [globalFilterFields]="['buildingCode', 'categoryName','propertyUse', 'owner','zoneName', 'assessmentNo']"
+          class="table-striped"
         >
 
           <ng-template pTemplate="caption">
