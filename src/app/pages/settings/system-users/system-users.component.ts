@@ -55,9 +55,10 @@ export class SystemUsersComponent implements OnInit{
     mobileNo: new FormControl("",[Validators.required]),
     username: new FormControl("",[Validators.required]),
     idNo: new FormControl(""),
+    lga: new FormControl(""),
     actionedBy: new FormControl(""),
     sector: new FormControl("", [Validators.required]),
-    role: new FormControl("", [Validators.required]),
+    role: new FormControl(1, [Validators.required]),
   });
 
   constructor(private apiService: ApiService,
@@ -71,6 +72,18 @@ export class SystemUsersComponent implements OnInit{
     this.loadRoles();
     this.loadSectors();
     this.loadClasses();
+    this.loadLGAs();
+
+    this.form.get("role")?.valueChanges.subscribe((selectedRole)=>{
+      const lgaControl = this.form.get("lga");
+        if(selectedRole === 6){
+          lgaControl?.setValidators([Validators.required]);
+        }else{
+          lgaControl?.clearValidators();
+          lgaControl?.setValue('');
+        }
+      lgaControl?.updateValueAndValidity();
+    });
 
   }
 
@@ -105,6 +118,14 @@ export class SystemUsersComponent implements OnInit{
 
   }
 
+  loadLGAs(){
+    this.apiService.get(`lga/all`).subscribe((result:any)=>{
+      this.lgaList = result.data;
+    },error => {
+      this.errorBag = error.message
+    })
+
+  }
 
   exportFile(){
 
@@ -165,6 +186,7 @@ export class SystemUsersComponent implements OnInit{
 
     })
   }
+
   handleNewUserSubmission(){
     this.isFormSubmitted = true;
     this.formValue = this.form.value;

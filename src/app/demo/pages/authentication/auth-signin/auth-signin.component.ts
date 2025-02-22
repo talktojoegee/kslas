@@ -97,8 +97,14 @@ export default class AuthSigninComponent implements OnInit{
         }
       });*/
       this.isFormSubmitted = false;
-      const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
-      this.router.navigate([returnUrl]);
+      if(role === 'LGA CHAIR'){
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard-lga';
+        this.router.navigate([returnUrl]);
+      }else{
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+        this.router.navigate([returnUrl]);
+      }
+
     },(error) => {
       this.isFormSubmitted = false;
       this.errorMessage = "Whoops! Something went wrong or invalid login credentials"; //error.message;

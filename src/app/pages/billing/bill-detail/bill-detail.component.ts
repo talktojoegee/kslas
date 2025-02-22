@@ -73,6 +73,7 @@ export class BillDetailComponent implements OnInit{
   balance: number = 0;
   special: number = 0;
   luc: number = 0;
+  record:any;
   //assessValue: number = 0;
   formValue: any;
 
@@ -108,10 +109,15 @@ export class BillDetailComponent implements OnInit{
       this.url = this.route.snapshot.paramMap.get('url') || '';
       this.loadBill();
     });
+
+
+
+
   }
 
   loadBill(){
     this.apiService.get(`billing/detail/${this.url}`).subscribe((res:any)=>{
+      this.record = res.data;
       this.billId = res.data.billId;
       this.ownerName = res.data.ownerName;
       this.buildingCode = res.data.buildingCode;
@@ -191,6 +197,43 @@ export class BillDetailComponent implements OnInit{
 
 
 
+  printBill(assessmentNo) {
+    const element = document.getElementById('billWrapper');
+    const billActionButtons = document.getElementById('billActionButtons');
+
+    if (!element) {
+      return;
+    }
+    billActionButtons.style.display = 'hidden';
+    element.style.display = 'block';
+
+    html2canvas(element).then(canvas => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 190;
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+
+      let position = 10;
+
+      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      let fileName = 'BillAssessmentNo_'+assessmentNo+'.pdf'
+
+      pdf.save(fileName);
+      //element.style.display = 'none';
+      billActionButtons.style.display = 'block';
+    });
+  }
+
   exportToPDF(assessmentNo) {
     const element = document.getElementById('content-to-pdf'); // The section to convert
 
@@ -229,11 +272,44 @@ export class BillDetailComponent implements OnInit{
 
 
 
-  verifyBill(){
+  reviewBill(){
     let requestId = this.billId;
     const obj = {
       requestId:requestId,
       action:1,
+      actionedBy:this.apiService.getItem('uuid')
+    };
+    this.isFormSubmitted = true;
+    this.apiService.post(`billing/action-bill`,obj).subscribe((res:any)=>{
+      this.isFormSubmitted = false;
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Action successful',
+        detail: "Bill reviewed"
+      });
+      this.closeModal('review');
+      if(this.special === 0){
+        this.delayAndRedirect('/billings/review')
+      }else{
+        this.delayAndRedirect('/billings/review-special-interest-bills')
+      }
+
+    },error=>{
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Whoops!',
+        detail: "Something went wrong."
+      });
+      this.isFormSubmitted = false;
+    })
+  }
+
+
+  verifyBill(){
+    let requestId = this.billId;
+    const obj = {
+      requestId:requestId,
+      action:2,
       actionedBy:this.apiService.getItem('uuid')
     };
     this.isFormSubmitted = true;
@@ -335,7 +411,7 @@ export class BillDetailComponent implements OnInit{
     let requestId = this.billId;
     const obj = {
       requestId,
-      action:2,
+      action:3,
       actionedBy:this.apiService.getItem('uuid')
     };
     this.apiService.post(`billing/action-bill`,obj).subscribe((res:any)=>{
@@ -368,7 +444,7 @@ export class BillDetailComponent implements OnInit{
     let requestId = this.billId;
     const obj = {
       requestId,
-      action:3,
+      action:4,
       actionedBy:this.apiService.getItem('uuid')
     };
     this.apiService.post(`billing/action-bill`,obj).subscribe((res:any)=>{

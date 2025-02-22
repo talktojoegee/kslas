@@ -16,7 +16,8 @@ import {PaginatorModule} from "primeng/paginator";
   imports: [RouterLink, CommonModule, CardComponent, TableModule, Button,
     IconFieldModule, InputIconModule, PaginatorModule],
   templateUrl: './returned-special-interest-bills.component.html',
-  styleUrl: './returned-special-interest-bills.component.scss'
+  styleUrl: './returned-special-interest-bills.component.scss',
+  providers:[MessageService]
 })
 export class ReturnedSpecialInterestBillsComponent implements OnInit{
 

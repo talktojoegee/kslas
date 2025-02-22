@@ -83,6 +83,7 @@
               <th pSortableColumn="year" scope="col">Billing Code <p-sortIcon field="year" /></th>
               <th pSortableColumn="zoneName" scope="col">Zone <p-sortIcon field="zoneName" /></th>
               <th pSortableColumn="categoryName" scope="col">Category<p-sortIcon field="categoryName" /></th>
+              <th pSortableColumn="propertyUse" scope="col">Property Use<p-sortIcon field="propertyUse" /></th>
               <th pSortableColumn="occupancy" scope="col">Occupancy<p-sortIcon field="occupancy" /></th>
               <th scope="col">Charge Rate(%)</th>
               <th scope="col">AVG. Mkt. Value({{ APP_CURRENCY }}/sqm)</th>
@@ -107,6 +108,7 @@
               <td>{{item?.pavCode}}</td>
               <td>{{item?.zoneName}}</td>
               <td>{{item?.categoryName}}</td>
+              <td>{{item?.propertyUse}}</td>
               <td>{{item?.occupancy}}</td>
               <td>{{item?.rate}}</td>
               <td>{{item?.assessValue.toLocaleString()}}</td>

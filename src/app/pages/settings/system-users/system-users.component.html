@@ -219,6 +219,18 @@
               Role  is required
             </div>
           </div>
+          <div class="form-group mb-3" *ngIf="form.get('role')?.value == 6">
+            <label for="lga">LGA <sup class="text-danger">*</sup></label>
+            <select name="lga" formControlName="lga" id="lga" class="form-control">
+              <option disabled selected>--Select LGA--</option>
+              <option *ngFor="let option of lgaList" [value]="option.id">{{option.lgaName}}</option>
+
+            </select>
+            <span *ngIf="form.get('lga')?.invalid && form.get('lga')?.touched">
+              LGA is required!
+            </span>
+          </div>
+
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 

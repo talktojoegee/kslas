@@ -51,7 +51,8 @@ export class OutstandingBillsComponent implements OnInit{
      //this.loading = false;
     this.skip = event.first || 0;
     this.limit = event.rows || 0;
-    let url = `billing/outstanding-bills/${this.limit}/${this.skip}`;
+     let authUser = this.apiService.getItem('uuid');
+    let url = `billing/outstanding-bills/${authUser}/${this.limit}/${this.skip}`;
     this.apiService.get(url).subscribe((result:any)=>{
       this.billList = result.data;
       this.total = result.total;
@@ -71,6 +72,25 @@ export class OutstandingBillsComponent implements OnInit{
 
   goBack(): void {
     this.location.back();
+  }
+
+
+  downloadAttachment() {
+    let type = "normal-outstanding";
+    let authUser = this.apiService.getItem('uuid');
+    this.apiService.downloadFile(`export-bills/${authUser}/${type}`).subscribe((response)=>{
+      this.isFormSubmitted = false;
+      const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'bills.xlsx';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    },error=>{
+
+      this.isFormSubmitted = false;
+    })
   }
 
 

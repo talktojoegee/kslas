@@ -16,7 +16,8 @@ import {PaginatorModule} from "primeng/paginator";
   imports: [RouterLink, CommonModule, CardComponent, TableModule, Button,
     IconFieldModule, InputIconModule, PaginatorModule],
   templateUrl: './approve-special-interest-bills.component.html',
-  styleUrl: './approve-special-interest-bills.component.scss'
+  styleUrl: './approve-special-interest-bills.component.scss',
+  providers:[MessageService]
 })
 export class ApproveSpecialInterestBillsComponent implements OnInit {
 
@@ -52,7 +53,7 @@ export class ApproveSpecialInterestBillsComponent implements OnInit {
     this.isLoading = true;
     this.skip = event.first || 0;
     this.limit = event.rows || 0;
-    const status = 2;
+    const status = 3;
     let authUser = this.apiService.getItem('uuid');
     let url = `billing/special-interest-bills/${authUser}/${this.limit}/${this.skip}/${status}`;
     this.apiService.get(url).subscribe((result:any)=>{
@@ -106,13 +107,15 @@ export class ApproveSpecialInterestBillsComponent implements OnInit {
   approveAll() {
     let ids = this.getSelectedBillIds();
     let url = `billing/bills/bulk-action`;
-    this.apiService.post(url,{ids,action:'approve'}).subscribe((result:any)=>{
+    let authUser = this.apiService.getItem('uuid');
+    this.apiService.post(url,{ids,action:'approve', actionedBy:authUser}).subscribe((result:any)=>{
       this.messageService.add({
         severity: 'success',
         summary: 'Great!',
         detail: "Action successful"
       });
       this.isLoading = false;
+      this.selectedBills = [];
       this.loadBills({ first: 0, rows: this.limit })
 
     },error => {

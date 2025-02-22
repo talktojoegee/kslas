@@ -1,0 +1,54 @@
+<div class="row">
+  <div class="col-sm-4 col-md-4">
+    <app-card class="text-uppercase" cardTitle="Add New Depreciation" [options]="false">
+      <div class="row">
+        <div class="col-md-12">
+          <form [formGroup]="form">
+            <div class="form-group">
+              <label for="range">Amount <sup class="text-danger">*</sup></label>
+              <input name="range"  formControlName="amount" autocomplete="off" type="number" step="0.01"  placeholder="Enter Amount" class="form-control shadow-none mt-2">
+              @if(form.controls['amount'].touched && form.controls['amount'].errors?.['required']){
+              <div  class=" text-danger text-capitalize">
+                Amount is required
+              </div>
+              }
+            </div>
+            <div class="form-group d-flex justify-content-center">
+              <button (click)="submitData()" [disabled]="form.invalid " *ngIf="!isFormSubmitted" type="button" class="btn btn-primary btn-square"> <i class="feather icon-check-circle"></i> Submit</button>
+              <button type="button" disabled style="cursor: not-allowed" *ngIf="isFormSubmitted" class="btn btn-primary"><i class="fa fa-spinner fa-spin"></i> Processing  </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </app-card>
+  </div>
+
+
+  <div class="col-sm-8 col-md-8">
+    <app-card class="text-uppercase" cardTitle="Minimum Land Use Charge(LUC)" [options]="false">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Amount(₦)</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>1</td>
+                <td>{{minLUC.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </app-card>
+  </div>
+  <p-toast></p-toast>
+</div>
+
+

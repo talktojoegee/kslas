@@ -17,7 +17,8 @@ import {ToastModule} from "primeng/toast";
   imports: [RouterLink, CommonModule, CardComponent, TableModule, Button,
     IconFieldModule, InputIconModule, PaginatorModule, ToastModule],
   templateUrl: './verify-special-interest-bills.component.html',
-  styleUrl: './verify-special-interest-bills.component.scss'
+  styleUrl: './verify-special-interest-bills.component.scss',
+  providers:[MessageService]
 })
 export class VerifySpecialInterestBillsComponent implements OnInit {
 
@@ -53,7 +54,7 @@ export class VerifySpecialInterestBillsComponent implements OnInit {
     this.isLoading = true;
     this.skip = event.first || 0;
     this.limit = event.rows || 0;
-    const status = 0;
+    const status = 1;
     let authUser = this.apiService.getItem('uuid');
     let url = `billing/special-interest-bills/${authUser}/${this.limit}/${this.skip}/${status}`;
     this.apiService.get(url).subscribe((result:any)=>{
@@ -105,13 +106,15 @@ export class VerifySpecialInterestBillsComponent implements OnInit {
   verifyAll() {
     let ids = this.getSelectedBillIds();
     let url = `billing/bills/bulk-action`;
-    this.apiService.post(url,{ids,action:'verify'}).subscribe((result:any)=>{
+    let authUser = this.apiService.getItem('uuid');
+    this.apiService.post(url,{ids,action:'verify', actionedBy:authUser}).subscribe((result:any)=>{
       this.messageService.add({
         severity: 'success',
         summary: 'Great!',
         detail: "Action successful"
       });
       this.isLoading = false;
+      this.selectedBills = [];
       this.loadBills({ first: 0, rows: this.limit })
 
     },error => {

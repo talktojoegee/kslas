@@ -555,7 +555,10 @@ export default class DashboardComponent implements OnInit {
           }
         },
         dataLabels: {
-          enabled: false
+          enabled: false,
+          formatter: function (val: number) {
+            return val.toFixed(2);
+          }
         },
         stroke: {
           show: true,
@@ -566,9 +569,12 @@ export default class DashboardComponent implements OnInit {
           categories: ['Jan','Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         },
         yaxis: {
-          title: {
-            text: '₦ (Amount)'
-          }
+          labels: {
+            formatter: function (val: number) {
+              return '₦ ' + val.toFixed(2);
+            }
+          },
+
         },
         fill: {
           opacity: 1
@@ -576,7 +582,7 @@ export default class DashboardComponent implements OnInit {
         tooltip: {
           y: {
             formatter: function (val) {
-              return '₦ ' + val.toLocaleString() //+ ' thousands';
+              return '₦ ' + val.toFixed(2);
             }
           }
         }

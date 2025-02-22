@@ -189,5 +189,11 @@ export class PropertyListComponent {
     }
   }
 
+  onSelectChange(event:Event){
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    this.limit = Number(selectedValue);
+    this.fetchData({ first: 0, rows: this.limit });
+  }
+
 
 }

@@ -16,7 +16,8 @@ import {PaginatorModule} from "primeng/paginator";
   imports: [RouterLink, CommonModule, CardComponent, TableModule, Button,
     IconFieldModule, InputIconModule, PaginatorModule],
   templateUrl: './outstanding-special-interest-bills.component.html',
-  styleUrl: './outstanding-special-interest-bills.component.scss'
+  styleUrl: './outstanding-special-interest-bills.component.scss',
+  providers:[MessageService]
 })
 export class OutstandingSpecialInterestBillsComponent implements OnInit{
 
@@ -52,7 +53,7 @@ export class OutstandingSpecialInterestBillsComponent implements OnInit{
     this.skip = event.first || 0;
     this.limit = event.rows || 0;
     let authUser = this.apiService.getItem('uuid');
-    let url = `billing/outstanding-bills/${authUser}/${this.limit}/${this.skip}`;
+    let url = `billing/outstanding-special-interest-bills/${authUser}/${this.limit}/${this.skip}`;
     this.apiService.get(url).subscribe((result:any)=>{
       this.billList = result.data;
       this.total = result.total;
@@ -74,6 +75,24 @@ export class OutstandingSpecialInterestBillsComponent implements OnInit{
     this.location.back();
   }
 
+
+  downloadAttachment() {
+    let type = "special-outstanding";
+    let authUser = this.apiService.getItem('uuid');
+    this.apiService.downloadFile(`export-bills/${authUser}/${type}`).subscribe((response)=>{
+      this.isFormSubmitted = false;
+      const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'bills.xlsx';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    },error=>{
+
+      this.isFormSubmitted = false;
+    })
+  }
 
 
 }

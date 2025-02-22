@@ -17,6 +17,27 @@
       </div>
       <div class="card-body">
         <p>Total: <code>{{total.toLocaleString()}}</code> records</p>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="input-group mb-3" >
+              <span id="basic-addon1" class="input-group-text">Show</span>
+              <select (change)="onSelectChange($event)" name="show" id="show" class="form-control shadow-none col-md-2">
+                <option disabled selected>--Select--</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+                <option value="500">500</option>
+                <option value="1000">1000</option>
+                <option value="2000">2000</option>
+                <option [value]="total">All Records</option>
+              </select>
+              <span id="basic-addon2" class="input-group-text">Records</span>
+            </div>
+            <p>Showing <span class="text-info">{{limit.toLocaleString()}}</span>  records of <code>{{total.toLocaleString()}}</code></p>
+
+          </div>
+        </div>
         <div class="table-responsive">
           <p-table
             #propertyTable
@@ -48,7 +69,7 @@
                 <th pSortableColumn="class" scope="col">Class <p-sortIcon field="class" /></th>
                 <th >Property Use </th>
                 <th scope="col">Occupancy</th>
-                <th scope="col">Action</th>
+                <th scope="col">Status</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-rowIndex="rowIndex" let-item>
@@ -63,7 +84,7 @@
                 <td>{{ item?.propertyUse || '-' }}</td>
                 <td>{{ item?.occupancy || '-' }}</td>
                 <td>
-                  <a [routerLink]="['/owner-management/property-details/', item.id]"><i class="feather icon-settings text-muted"></i></a>
+                  <span  class="badge bg-danger">Not Synchronized</span>
                 </td>
               </tr>
             </ng-template>
